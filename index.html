@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Where is Ride</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg: #f2f2f0;
+  --white: #ffffff;
+  --border: #e4e4e0;
+  --text: #0f0f0f;
+  --text2: #5a5a5a;
+  --text3: #a0a0a0;
+  --green: #1b8a52;
+  --green-light: #e8f5ee;
+  --red: #c0392b;
+  --red-light: #fcecea;
+  --blue: #1a4fdb;
+  --blue-light: #eef2fd;
+  --orange: #d4620a;
+  --orange-light: #fef0e6;
+  --accent: #0f0f0f;
+  --sheet: 54vh;
+}
+
+body {
+  font-family: 'Figtree', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── HEADER ── */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.header > * { pointer-events: all; }
+
+.wordmark {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+  flex: 1;
+}
+.wordmark-top {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+.wordmark-bottom {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+.wordmark-bottom span { color: var(--blue); }
+
+.header-btn {
+  width: 44px; height: 44px;
+  background: var(--white);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.header-btn svg { width:18px; height:18px; fill:none; stroke:var(--text2); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── AREA SEARCH BAR ── */
+.area-bar {
+  position: fixed;
+  top: 70px; left: 16px; right: 16px;
+  z-index: 290;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+}
+.area-dot { width:8px; height:8px; background:var(--blue); border-radius:50%; flex-shrink:0; }
+.area-text { flex:1; font-size:13px; font-weight:500; color:var(--text); }
+.area-sub { font-size:11px; color:var(--text3); margin-top:1px; }
+.area-change {
+  font-size:12px; font-weight:600; color:var(--blue);
+  background: var(--blue-light);
+  padding:5px 10px; border-radius:8px;
+  cursor:pointer; border:none;
+  font-family: 'Figtree', sans-serif;
+}
+
+/* ── MAP ── */
+.map-area {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.map-svg {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+}
+
+/* ── USER PIN ── */
+.user-pin {
+  position:absolute;
+  top:44%; left:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  display:flex; align-items:center; justify-content:center;
+}
+.user-pulse {
+  position:absolute;
+  width:48px; height:48px;
+  border-radius:50%;
+  background:rgba(26,79,219,0.14);
+  animation:uPulse 2.8s ease-out infinite;
+}
+@keyframes uPulse {
+  0%{transform:scale(.4);opacity:.9}
+  100%{transform:scale(2.4);opacity:0}
+}
+.user-dot {
+  width:15px; height:15px;
+  background:var(--blue);
+  border-radius:50%;
+  border:3px solid white;
+  box-shadow:0 2px 8px rgba(26,79,219,.5);
+  position:relative; z-index:2;
+}
+.user-label {
+  position:absolute;
+  top:-28px; left:50%;
+  transform:translateX(-50%);
+  background:var(--blue);
+  color:white;
+  font-size:10px; font-weight:600;
+  padding:3px 8px;
+  border-radius:6px;
+  white-space:nowrap;
+  letter-spacing:0.2px;
+}
+.user-label::after {
+  content:'';
+  position:absolute;
+  top:100%; left:50%;
+  transform:translateX(-50%);
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:4px solid var(--blue);
+}
+
+/* ── VEHICLE PINS ── */
+.v-pin {
+  position:absolute;
+  transform:translate(-50%,-100%);
+  z-index:15;
+  cursor:pointer;
+}
+
+.v-tag {
+  background:var(--white);
+  border-radius:9px;
+  padding:6px 10px 6px 8px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.06);
+  white-space:nowrap;
+  position:relative;
+  transition:box-shadow .2s, transform .2s;
+}
+.v-tag:active { transform:scale(.96); }
+
+.v-tag::after {
+  content:'';
+  position:absolute;
+  bottom:-5px; left:50%;
+  transform:translateX(-50%);
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:5px solid white;
+}
+
+.v-tag.selected {
+  background:var(--accent);
+  box-shadow:0 4px 16px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.1);
+}
+.v-tag.selected .v-tag-type,
+.v-tag.selected .v-tag-dist { color:white; }
+.v-tag.selected .v-tag-dot.free { background:var(--green); }
+.v-tag.selected .v-tag-dot.busy { background:var(--red); }
+.v-tag.selected::after { border-top-color:var(--accent); }
+.v-tag.selected .tag-icon { stroke:white; }
+
+.tag-icon { width:14px; height:14px; fill:none; stroke:var(--text2); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.v-tag-type { font-size:11.5px; font-weight:600; color:var(--text); }
+.v-tag-dist { font-size:10.5px; color:var(--text3); font-family:'DM Mono',monospace; }
+.v-tag-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.v-tag-dot.free { background:var(--green); }
+.v-tag-dot.busy { background:var(--red); }
+
+/* drift animations */
+@keyframes d1 { 0%,100%{top:36%;left:28%} 40%{top:34%;left:31%} 70%{top:37%;left:29%} }
+@keyframes d2 { 0%,100%{top:55%;left:66%} 35%{top:57%;left:64%} 65%{top:54%;left:68%} }
+@keyframes d3 { 0%,100%{top:63%;left:26%} 50%{top:61%;left:29%} }
+@keyframes d4 { 0%,100%{top:30%;left:18%} 45%{top:32%;left:21%} }
+
+.d1{animation:d1 8s ease-in-out infinite}
+.d2{animation:d2 10s ease-in-out infinite}
+.d3{animation:d3 7s ease-in-out infinite}
+.d4{animation:d4 9s ease-in-out infinite}
+
+/* ── LOCATE BTN ── */
+.locate-btn {
+  position:fixed;
+  right:14px;
+  bottom:calc(var(--sheet) + 14px);
+  z-index:200;
+  width:44px; height:44px;
+  background:var(--white);
+  border-radius:12px;
+  border:none;
+  box-shadow:0 1px 6px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+}
+.locate-btn svg { width:18px; height:18px; fill:none; stroke:var(--text2); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── TRACKING CARD (selected) ── */
+.track-card {
+  position:fixed;
+  bottom:calc(var(--sheet) + 6px);
+  left:12px; right:62px;
+  z-index:200;
+  background:var(--white);
+  border-radius:14px;
+  padding:14px 14px 12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+  display:none;
+}
+.track-card.show { display:block; animation:tcUp .2s ease; }
+@keyframes tcUp { from{transform:translateY(8px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+.tc-top {
+  display:flex; align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.tc-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.tc-id { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; }
+.tc-close {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--bg); border:none; cursor:pointer;
+  font-size:12px; color:var(--text2);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+.tc-stats { display:flex; gap:6px; }
+.tc-stat {
+  flex:1;
+  background:var(--bg);
+  border-radius:8px;
+  padding:8px 10px;
+}
+.tc-stat-val { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-.3px; margin-bottom:1px; }
+.tc-stat-lbl { font-size:10px; color:var(--text3); font-weight:500; }
+
+.tc-status-row {
+  display:flex; align-items:center; gap:6px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.tc-status-indicator {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0;
+}
+.tc-status-text { font-size:12px; font-weight:600; }
+.tc-driver { font-size:12px; color:var(--text3); margin-left:auto; }
+
+/* ── BOTTOM SHEET ── */
+.sheet {
+  position:fixed;
+  bottom:0; left:0; right:0;
+  z-index:250;
+  background:var(--white);
+  border-radius:18px 18px 0 0;
+  box-shadow:0 -2px 20px rgba(0,0,0,0.08);
+  height:var(--sheet);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.sheet-handle {
+  width:34px; height:4px;
+  background:#ddd;
+  border-radius:2px;
+  margin:10px auto 0;
+  flex-shrink:0;
+}
+
+/* Tab navigation */
+.sheet-tabs {
+  display:flex;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  padding:0 16px;
+  margin-top:10px;
+}
+.stab {
+  padding:9px 0 10px;
+  margin-right:20px;
+  font-size:13px; font-weight:600;
+  color:var(--text3);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+  white-space:nowrap;
+  border:none; background:none;
+  font-family:'Figtree',sans-serif;
+}
+.stab.active { color:var(--text); border-bottom-color:var(--text); }
+
+/* Summary strip */
+.summary-strip {
+  display:flex;
+  gap:0;
+  flex-shrink:0;
+  border-bottom:1px solid var(--border);
+}
+.strip-item {
+  flex:1;
+  padding:12px 0;
+  text-align:center;
+  border-right:1px solid var(--border);
+}
+.strip-item:last-child { border-right:none; }
+.strip-val { font-size:19px; font-weight:700; letter-spacing:-.5px; line-height:1; margin-bottom:3px; }
+.strip-val.g { color:var(--green); }
+.strip-val.r { color:var(--red); }
+.strip-val.b { color:var(--blue); }
+.strip-lbl { font-size:10px; color:var(--text3); font-weight:500; letter-spacing:.2px; }
+
+/* Type filter */
+.type-row {
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:10px 16px;
+  scrollbar-width:none;
+  flex-shrink:0;
+}
+.type-row::-webkit-scrollbar{display:none}
+.tpill {
+  padding:6px 13px;
+  border-radius:100px;
+  border:1.5px solid var(--border);
+  background:transparent;
+  color:var(--text2);
+  font-family:'Figtree',sans-serif;
+  font-size:12px; font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.tpill.active { background:var(--accent); border-color:var(--accent); color:white; }
+
+/* Vehicle list */
+.v-list { flex:1; overflow-y:auto; padding:0 16px 24px; scrollbar-width:none; }
+.v-list::-webkit-scrollbar{display:none}
+
+.list-section-label {
+  font-size:10px; font-weight:700;
+  color:var(--text3); letter-spacing:.8px;
+  text-transform:uppercase;
+  padding:10px 0 8px;
+}
+
+.v-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.v-row:last-child { border-bottom:none; }
+.v-row:active { opacity:.55; }
+
+/* status bar left */
+.v-row-bar {
+  width:3px; height:36px;
+  border-radius:2px;
+  flex-shrink:0;
+}
+.v-row-bar.free { background:var(--green); }
+.v-row-bar.busy { background:var(--red); }
+
+.v-row-icon {
+  width:40px; height:40px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.v-row-icon svg { width:20px; height:20px; fill:none; stroke:var(--text2); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.v-row-icon.free { background:var(--green-light); }
+.v-row-icon.free svg { stroke:var(--green); }
+.v-row-icon.busy { background:#f5f5f5; }
+
+.v-row-body { flex:1; min-width:0; }
+.v-row-name { font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:2px; }
+.v-row-meta { font-size:11.5px; color:var(--text3); display:flex; align-items:center; gap:5px; }
+.v-row-meta .dot { width:3px; height:3px; background:#ccc; border-radius:50%; flex-shrink:0; }
+
+.v-row-right { text-align:right; flex-shrink:0; }
+.v-row-dist { font-size:14px; font-weight:700; font-family:'DM Mono',monospace; color:var(--text); margin-bottom:4px; }
+.v-row-dist.dim { color:var(--text3); }
+
+.pill {
+  display:inline-block;
+  font-size:10px; font-weight:700;
+  padding:3px 8px;
+  border-radius:100px;
+  letter-spacing:.2px;
+}
+.pill.free { background:var(--green-light); color:var(--green); }
+.pill.busy { background:var(--red-light); color:var(--red); }
+.pill.moving { background:var(--orange-light); color:var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- MAP -->
+<div class="map-area">
+  <svg class="map-svg" viewBox="0 0 390 850" preserveAspectRatio="xMidYMid slice">
+    <!-- Base -->
+    <rect width="390" height="850" fill="#e8e5dc"/>
+    <!-- Parks / open areas -->
+    <rect x="20" y="340" width="80" height="60" rx="6" fill="#d4edda" opacity=".7"/>
+    <rect x="295" y="460" width="70" height="50" rx="6" fill="#d4edda" opacity=".6"/>
+    <!-- Main roads -->
+    <rect x="0" y="210" width="390" height="16" fill="white" opacity=".9"/>
+    <rect x="0" y="420" width="390" height="13" fill="white" opacity=".85"/>
+    <rect x="0" y="600" width="390" height="10" fill="white" opacity=".75"/>
+    <rect x="105" y="0" width="15" height="850" fill="white" opacity=".9"/>
+    <rect x="255" y="0" width="13" height="850" fill="white" opacity=".85"/>
+    <!-- Secondary roads -->
+    <rect x="0" y="300" width="390" height="6" fill="white" opacity=".55"/>
+    <rect x="0" y="500" width="390" height="5" fill="white" opacity=".5"/>
+    <rect x="0" y="690" width="390" height="5" fill="white" opacity=".45"/>
+    <rect x="55" y="0" width="6" height="850" fill="white" opacity=".5"/>
+    <rect x="180" y="0" width="5" height="850" fill="white" opacity=".45"/>
+    <rect x="320" y="0" width="5" height="850" fill="white" opacity=".45"/>
+    <!-- City blocks -->
+    <rect x="7" y="220" width="90" height="74" rx="4" fill="#ddd9cf" opacity=".6"/>
+    <rect x="125" y="220" width="122" height="74" rx="4" fill="#ddd9cf" opacity=".6"/>
+    <rect x="272" y="220" width="110" height="74" rx="4" fill="#ddd9cf" opacity=".6"/>
+    <rect x="7" y="308" width="90" height="106" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="125" y="308" width="122" height="106" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="272" y="308" width="110" height="106" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="7" y="430" width="90" height="62" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="125" y="430" width="122" height="62" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="272" y="430" width="110" height="62" rx="4" fill="#ddd9cf" opacity=".5"/>
+    <rect x="7" y="508" width="90" height="84" rx="4" fill="#ddd9cf" opacity=".4"/>
+    <rect x="125" y="508" width="122" height="84" rx="4" fill="#ddd9cf" opacity=".4"/>
+    <rect x="272" y="508" width="110" height="84" rx="4" fill="#ddd9cf" opacity=".4"/>
+    <!-- Road labels -->
+    <text x="194" y="205" text-anchor="middle" font-size="8" fill="#b0aa9f" font-family="Figtree,sans-serif" font-weight="600" letter-spacing="1">MG ROAD</text>
+    <text x="194" y="415" text-anchor="middle" font-size="8" fill="#b0aa9f" font-family="Figtree,sans-serif" font-weight="600" letter-spacing="1">BRIGADE ROAD</text>
+    <text x="113" y="140" text-anchor="middle" font-size="7.5" fill="#b0aa9f" font-family="Figtree,sans-serif" font-weight="600" letter-spacing="1" transform="rotate(-90 113 140)">RESIDENCY RD</text>
+    <text x="263" y="140" text-anchor="middle" font-size="7.5" fill="#b0aa9f" font-family="Figtree,sans-serif" font-weight="600" letter-spacing="1" transform="rotate(-90 263 140)">RICHMOND ST</text>
+  </svg>
+
+  <!-- Vehicle Pins -->
+  <div class="v-pin d1" id="pin0" style="top:36%;left:28%">
+    <div class="v-tag" id="vtag0">
+      <svg class="tag-icon" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+      <span class="v-tag-type">Auto</span>
+      <div class="v-tag-dot free"></div>
+      <span class="v-tag-dist">0.4 km</span>
+    </div>
+  </div>
+
+  <div class="v-pin d2" id="pin1" style="top:55%;left:66%">
+    <div class="v-tag" id="vtag1">
+      <svg class="tag-icon" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/><path d="M13 5l-2 4h4l-2 4" stroke-width="1.4"/></svg>
+      <span class="v-tag-type">EV Auto</span>
+      <div class="v-tag-dot free"></div>
+      <span class="v-tag-dist">0.7 km</span>
+    </div>
+  </div>
+
+  <div class="v-pin" id="pin2" style="top:27%;left:70%">
+    <div class="v-tag" id="vtag2">
+      <svg class="tag-icon" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2v-3a2 2 0 012-2h1l3-5h8l3 5h1a2 2 0 012 2v3a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+      <span class="v-tag-type">Car</span>
+      <div class="v-tag-dot busy"></div>
+      <span class="v-tag-dist">1.1 km</span>
+    </div>
+  </div>
+
+  <div class="v-pin d3" id="pin3" style="top:63%;left:26%">
+    <div class="v-tag" id="vtag3">
+      <svg class="tag-icon" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+      <span class="v-tag-type">Auto</span>
+      <div class="v-tag-dot free"></div>
+      <span class="v-tag-dist">1.2 km</span>
+    </div>
+  </div>
+
+  <div class="v-pin d4" id="pin4" style="top:30%;left:18%">
+    <div class="v-tag" id="vtag4">
+      <svg class="tag-icon" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2v-3a2 2 0 012-2h1l3-5h8l3 5h1a2 2 0 012 2v3a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+      <span class="v-tag-type">Taxi</span>
+      <div class="v-tag-dot busy"></div>
+      <span class="v-tag-dist">1.5 km</span>
+    </div>
+  </div>
+
+  <!-- User -->
+  <div class="user-pin">
+    <div class="user-pulse"></div>
+    <div class="user-dot"></div>
+    <div class="user-label">You are here</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="wordmark">
+    <div class="wordmark-top">Tracking</div>
+    <div class="wordmark-bottom">Where is <span>Ride</span></div>
+  </div>
+  <button class="header-btn">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+  </button>
+</div>
+
+<!-- AREA BAR -->
+<div class="area-bar">
+  <div class="area-dot"></div>
+  <div>
+    <div class="area-text">MG Road, Bengaluru</div>
+    <div class="area-sub">12 vehicles tracked in this area</div>
+  </div>
+  <button class="area-change">Change</button>
+</div>
+
+<!-- LOCATE -->
+<button class="locate-btn">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+</button>
+
+<!-- TRACKING CARD -->
+<div class="track-card" id="trackCard">
+  <div class="tc-top">
+    <div>
+      <div class="tc-title" id="tc-title">Auto Rickshaw</div>
+      <div class="tc-id" id="tc-id">KA 05 AB 7821</div>
+    </div>
+    <button class="tc-close" id="tc-close">✕</button>
+  </div>
+  <div class="tc-stats">
+    <div class="tc-stat">
+      <div class="tc-stat-val" id="tc-dist">0.4 km</div>
+      <div class="tc-stat-lbl">Distance</div>
+    </div>
+    <div class="tc-stat">
+      <div class="tc-stat-val" id="tc-eta">3 min</div>
+      <div class="tc-stat-lbl">Arrives in</div>
+    </div>
+    <div class="tc-stat">
+      <div class="tc-stat-val" id="tc-rating">4.7</div>
+      <div class="tc-stat-lbl">Rating</div>
+    </div>
+  </div>
+  <div class="tc-status-row">
+    <div class="tc-status-indicator" id="tc-dot"></div>
+    <span class="tc-status-text" id="tc-status-text"></span>
+    <span class="tc-driver" id="tc-driver"></span>
+  </div>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet">
+  <div class="sheet-handle"></div>
+
+  <div class="sheet-tabs">
+    <button class="stab active">Nearby</button>
+    <button class="stab">Auto</button>
+    <button class="stab">EV</button>
+    <button class="stab">Car / Taxi</button>
+  </div>
+
+  <div class="summary-strip">
+    <div class="strip-item">
+      <div class="strip-val g">8</div>
+      <div class="strip-lbl">Empty</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val r">4</div>
+      <div class="strip-lbl">In Trip</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val b">0.4</div>
+      <div class="strip-lbl">Nearest km</div>
+    </div>
+    <div class="strip-item">
+      <div class="strip-val" style="color:var(--text)">12</div>
+      <div class="strip-lbl">Total Live</div>
+    </div>
+  </div>
+
+  <div class="v-list">
+    <div class="list-section-label">Available now</div>
+
+    <div class="v-row" data-i="0">
+      <div class="v-row-bar free"></div>
+      <div class="v-row-icon free"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg></div>
+      <div class="v-row-body">
+        <div class="v-row-name">Auto Rickshaw</div>
+        <div class="v-row-meta"><span>KA 05 AB 7821</span><div class="dot"></div><span>Ramesh K.</span><div class="dot"></div><span>4.7</span></div>
+      </div>
+      <div class="v-row-right">
+        <div class="v-row-dist">0.4 km</div>
+        <span class="pill free">Empty</span>
+      </div>
+    </div>
+
+    <div class="v-row" data-i="1">
+      <div class="v-row-bar free"></div>
+      <div class="v-row-icon free"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/><path d="M13 5l-2 4h4l-2 4" stroke-width="1.3"/></svg></div>
+      <div class="v-row-body">
+        <div class="v-row-name">EV Auto</div>
+        <div class="v-row-meta"><span>KA 01 E 3340</span><div class="dot"></div><span>Suresh M.</span><div class="dot"></div><span>4.9</span></div>
+      </div>
+      <div class="v-row-right">
+        <div class="v-row-dist">0.7 km</div>
+        <span class="pill free">Empty</span>
+      </div>
+    </div>
+
+    <div class="v-row" data-i="3">
+      <div class="v-row-bar free"></div>
+      <div class="v-row-icon free"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h3l3-4h6l1 4h1a2 2 0 012 2v6a2 2 0 01-2 2h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg></div>
+      <div class="v-row-body">
+        <div class="v-row-name">Auto Rickshaw</div>
+        <div class="v-row-meta"><span>KA 02 CD 4412</span><div class="dot"></div><span>Anil B.</span><div class="dot"></div><span>4.6</span></div>
+      </div>
+      <div class="v-row-right">
+        <div class="v-row-dist">1.2 km</div>
+        <span class="pill free">Empty</span>
+      </div>
+    </div>
+
+    <div class="list-section-label" style="margin-top:4px">In trip</div>
+
+    <div class="v-row" data-i="2">
+      <div class="v-row-bar busy"></div>
+      <div class="v-row-icon busy"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2v-3a2 2 0 012-2h1l3-5h8l3 5h1a2 2 0 012 2v3a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+      <div class="v-row-body">
+        <div class="v-row-name">Car</div>
+        <div class="v-row-meta"><span>KA 04 MX 9011</span><div class="dot"></div><span>Priya D.</span><div class="dot"></div><span>4.5</span></div>
+      </div>
+      <div class="v-row-right">
+        <div class="v-row-dist dim">1.1 km</div>
+        <span class="pill busy">In trip</span>
+      </div>
+    </div>
+
+    <div class="v-row" data-i="4">
+      <div class="v-row-bar busy"></div>
+      <div class="v-row-icon busy"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2v-3a2 2 0 012-2h1l3-5h8l3 5h1a2 2 0 012 2v3a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+      <div class="v-row-body">
+        <div class="v-row-name">Taxi</div>
+        <div class="v-row-meta"><span>KA 03 TX 0078</span><div class="dot"></div><span>Vikram R.</span><div class="dot"></div><span>4.3</span></div>
+      </div>
+      <div class="v-row-right">
+        <div class="v-row-dist dim">1.5 km</div>
+        <span class="pill busy">In trip</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const data = [
+  { name:'Auto Rickshaw', id:'KA 05 AB 7821', dist:'0.4 km', eta:'3 min', rating:'4.7', driver:'Ramesh K.', status:'free' },
+  { name:'EV Auto',        id:'KA 01 E 3340',  dist:'0.7 km', eta:'5 min', rating:'4.9', driver:'Suresh M.', status:'free' },
+  { name:'Car',            id:'KA 04 MX 9011', dist:'1.1 km', eta:'—',     rating:'4.5', driver:'Priya D.',  status:'busy' },
+  { name:'Auto Rickshaw', id:'KA 02 CD 4412',  dist:'1.2 km', eta:'8 min', rating:'4.6', driver:'Anil B.',   status:'free' },
+  { name:'Taxi',           id:'KA 03 TX 0078', dist:'1.5 km', eta:'—',     rating:'4.3', driver:'Vikram R.', status:'busy' },
+];
+
+const card = document.getElementById('trackCard');
+
+function clearSel() {
+  document.querySelectorAll('.v-tag').forEach(t => t.classList.remove('selected'));
+}
+
+function showTrack(v) {
+  document.getElementById('tc-title').textContent = v.name;
+  document.getElementById('tc-id').textContent = v.id;
+  document.getElementById('tc-dist').textContent = v.dist;
+  document.getElementById('tc-eta').textContent = v.eta;
+  document.getElementById('tc-rating').textContent = v.rating;
+  document.getElementById('tc-driver').textContent = v.driver;
+  const dot = document.getElementById('tc-dot');
+  const txt = document.getElementById('tc-status-text');
+  if (v.status === 'free') {
+    dot.style.background = 'var(--green)';
+    txt.textContent = 'Available — moving toward you';
+    txt.style.color = 'var(--green)';
+  } else {
+    dot.style.background = 'var(--red)';
+    txt.textContent = 'Currently in trip';
+    txt.style.color = 'var(--red)';
+  }
+  card.classList.add('show');
+}
+
+// pin clicks
+for (let i = 0; i < 5; i++) {
+  document.getElementById('pin' + i).addEventListener('click', () => {
+    clearSel();
+    document.getElementById('vtag' + i).classList.add('selected');
+    showTrack(data[i]);
+  });
+}
+
+// row clicks
+document.querySelectorAll('.v-row').forEach(row => {
+  row.addEventListener('click', () => {
+    const i = +row.dataset.i;
+    clearSel();
+    document.getElementById('vtag' + i).classList.add('selected');
+    showTrack(data[i]);
+  });
+});
+
+document.getElementById('tc-close').addEventListener('click', () => {
+  card.classList.remove('show');
+  clearSel();
+});
+
+// tabs
+document.querySelectorAll('.stab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.stab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
