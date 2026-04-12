@@ -1,504 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Where is Ride</title>
-<link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Where is Ride</title>
 
-  :root {
-    --black: #0a0a0a;
-    --white: #ffffff;
-    --gray-100: #f4f4f4;
-    --gray-200: #e8e8e8;
-    --gray-400: #999;
-    --gray-600: #555;
-  }
+  <!-- Favicon using the map icon as base64 -->
+  <link rel="icon" type="image/png" href="mapIcon.png" />
 
-  html { scroll-behavior: smooth; }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
 
-  body {
-    font-family: 'Product Sans', sans-serif;
-    background: var(--white);
-    color: var(--black);
-    overflow-x: hidden;
-    line-height: 1.5;
-  }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 60px;
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--gray-200);
-  }
-  .nav-logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a { text-decoration: none; color: var(--gray-600); font-size: 14px; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--black); }
-  .nav-cta {
-    background: var(--black); color: var(--white); border: none;
-    padding: 10px 24px; border-radius: 100px;
-    font-family: 'Product Sans', sans-serif; font-size: 14px;
-    cursor: pointer; transition: opacity 0.2s;
-  }
-  .nav-cta:hover { opacity: 0.8; }
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray:  #888888;
+      --bg:    #f5f5f3;
+      --border: rgba(0,0,0,0.12);
+    }
 
-  /* ANDROID ONLY BANNER */
-  .android-banner {
-    margin-top: 81px; background: var(--gray-100);
-    border-bottom: 1px solid var(--gray-200);
-    padding: 10px 60px; display: flex; align-items: center; gap: 10px;
-    font-size: 13px; color: var(--gray-600);
-  }
-  .android-banner strong { color: var(--black); }
+    html, body {
+      min-height: 100vh;
+      font-family: 'Roboto', sans-serif;
+      background: var(--white);
+      color: var(--black);
+    }
 
-  /* HERO */
-  .hero {
-    min-height: calc(100vh - 121px);
-    display: grid; grid-template-columns: 1fr 1fr;
-    align-items: center; padding: 80px 60px;
-    gap: 60px; max-width: 1300px; margin: 0 auto;
-  }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 56px 24px 80px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid var(--gray-200); border-radius: 100px;
-    padding: 6px 16px; font-size: 12px; color: var(--gray-600);
-    margin-bottom: 28px; animation: fadeUp 0.6s ease both;
-  }
-  .badge-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #22c55e; animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    /* Dot-grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .hero-title {
-    font-size: clamp(44px, 5.5vw, 76px); font-weight: 700;
-    line-height: 1.05; letter-spacing: -2px;
-    animation: fadeUp 0.7s 0.1s ease both;
-  }
-  .hero-title span { display: block; color: var(--gray-400); }
+    .inner {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  .hero-sub {
-    margin-top: 24px; font-size: 17px; color: var(--gray-600);
-    max-width: 440px; line-height: 1.7;
-    animation: fadeUp 0.7s 0.2s ease both;
-  }
+    /* ── Logo bar ── */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s ease both;
+    }
 
-  .hero-actions {
-    display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap;
-    animation: fadeUp 0.7s 0.3s ease both;
-  }
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-  .dl-counter-row {
-    display: flex; align-items: baseline; gap: 8px;
-    margin-top: 32px; animation: fadeUp 0.7s 0.4s ease both;
-  }
-  .dl-num {
-    font-size: 28px; font-weight: 700; letter-spacing: -1px;
-    font-variant-numeric: tabular-nums; transition: all 0.3s;
-  }
-  .dl-label { font-size: 13px; color: var(--gray-400); }
+    .logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-  /* BUTTON */
-  .btn-android {
-    display: inline-flex; align-items: center; gap: 12px;
-    background: var(--black); color: var(--white);
-    padding: 14px 28px; border-radius: 14px;
-    border: 1.5px solid var(--black);
-    font-family: 'Product Sans', sans-serif;
-    cursor: pointer; transition: transform 0.2s, opacity 0.2s;
-    text-decoration: none;
-  }
-  .btn-android:hover { transform: translateY(-2px); opacity: 0.85; }
-  .btn-android svg { flex-shrink: 0; }
-  .store-label { line-height: 1.2; text-align: left; }
-  .store-label small { font-size: 10px; opacity: 0.6; display: block; }
-  .store-label strong { font-size: 15px; font-weight: 700; }
+    .logo-text {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
 
-  /* PHONE */
-  .hero-visual {
-    display: flex; justify-content: center; align-items: center;
-    position: relative; animation: fadeUp 0.8s 0.2s ease both;
-  }
-  .phone-wrap { position: relative; width: 280px; }
-  .phone-outer {
-    width: 280px; height: 560px; background: var(--black);
-    border-radius: 44px; padding: 10px;
-    box-shadow: 0 40px 100px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.05);
-  }
-  .phone-inner { width:100%; height:100%; background:#f0f0f0; border-radius:36px; overflow:hidden; }
-  .phone-screen { width:100%; height:100%; background:white; display:flex; flex-direction:column; }
-  .phone-map { flex:1; background:#f5f5f5; position:relative; overflow:hidden; }
-  .phone-map svg { width:100%; height:100%; }
-  .phone-status {
-    padding:14px 18px 0; display:flex; justify-content:space-between; align-items:center;
-    font-size:10px; font-weight:700; color:var(--black);
-    position:absolute; top:0; left:0; right:0; z-index:10;
-  }
-  .phone-bottom { padding:16px 18px 20px; background:white; border-top:1px solid var(--gray-200); }
-  .ride-card { background:var(--black); border-radius:16px; padding:14px 16px; color:white; }
-  .ride-header { font-size:10px; opacity:.5; margin-bottom:8px; }
-  .ride-info { display:flex; justify-content:space-between; align-items:center; }
-  .ride-driver { display:flex; align-items:center; gap:8px; }
-  .driver-avatar { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#555,#888); }
-  .driver-name { font-size:11px; font-weight:700; }
-  .driver-plate { font-size:9px; opacity:.5; margin-top:2px; }
-  .ride-eta { text-align:right; }
-  .eta-num { font-size:20px; font-weight:700; line-height:1; }
-  .eta-label { font-size:9px; opacity:.5; margin-top:2px; }
+    /* ── Phone frame ── */
+    .phone-frame {
+      width: 260px;
+      height: 460px;
+      background: var(--black);
+      border-radius: 40px;
+      padding: 16px;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.14),
+        0 40px 100px rgba(0,0,0,0.22);
+      position: relative;
+      margin-bottom: 56px;
+      animation: fadeUp 0.6s 0.1s ease both;
+      flex-shrink: 0;
+    }
 
-  .float-card {
-    position:absolute; background:white; border-radius:14px;
-    padding:12px 16px; box-shadow:0 8px 32px rgba(0,0,0,.1);
-    border:1px solid var(--gray-200); font-size:12px; white-space:nowrap;
-    animation:floatAnim 4s ease-in-out infinite;
-  }
-  .fc-1 { top:80px; right:-110px; }
-  .fc-2 { bottom:130px; left:-120px; animation-delay:-2s; }
-  .fc-label { color:var(--gray-400); font-size:10px; margin-bottom:4px; }
-  .fc-value { font-weight:700; font-size:14px; }
-  @keyframes floatAnim { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .phone-notch {
+      width: 64px;
+      height: 7px;
+      background: var(--black);
+      border-radius: 4px;
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
 
-  /* STRIP */
-  .strip {
-    border-top:1px solid var(--gray-200); border-bottom:1px solid var(--gray-200);
-    padding:24px 0; overflow:hidden; white-space:nowrap;
-  }
-  .strip-inner { display:inline-flex; gap:60px; animation:marquee 22s linear infinite; }
-  .strip-inner span { font-size:13px; color:var(--gray-400); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
-  .strip-inner span b { color:var(--black); }
-  @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .phone-screen {
+      background: var(--bg);
+      border-radius: 28px;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* FEATURES */
-  .features { padding:100px 60px; max-width:1300px; margin:0 auto; }
-  .section-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gray-400); margin-bottom:16px; }
-  .section-title { font-size:clamp(30px,3.5vw,48px); font-weight:700; letter-spacing:-1.5px; line-height:1.1; max-width:560px; margin-bottom:64px; }
-  .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:var(--gray-200); border-radius:24px; overflow:hidden; }
-  .feature-item { background:var(--white); padding:40px; transition:background .2s; }
-  .feature-item:hover { background:var(--gray-100); }
-  .feature-icon { width:44px; height:44px; background:var(--black); border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:24px; }
-  .feature-name { font-size:18px; font-weight:700; letter-spacing:-.5px; margin-bottom:10px; }
-  .feature-desc { font-size:14px; color:var(--gray-600); line-height:1.7; }
+    /* In-app top bar */
+    .phone-topbar {
+      background: var(--white);
+      padding: 30px 14px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 0.5px solid rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
 
-  /* CTA */
-  .cta { padding:100px 60px; max-width:1300px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
-  .cta-title { font-size:clamp(34px,4vw,56px); font-weight:700; letter-spacing:-2px; line-height:1.05; }
-  .cta-title em { font-style:normal; text-decoration:underline; text-decoration-thickness:3px; text-underline-offset:6px; }
-  .cta-desc { font-size:16px; color:var(--gray-600); line-height:1.7; margin-bottom:36px; max-width:400px; }
+    .phone-topbar-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-  /* TOAST */
-  .toast {
-    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
-    background:var(--black); color:var(--white);
-    padding:14px 24px; border-radius:100px; font-size:14px;
-    box-shadow:0 8px 32px rgba(0,0,0,.18);
-    opacity:0; transition:opacity .3s,transform .3s; z-index:999; white-space:nowrap;
-  }
-  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .phone-topbar-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-  /* FOOTER */
-  footer { border-top:1px solid var(--gray-200); padding:36px 60px; }
-  .footer-inner {
-    max-width:1300px; margin:0 auto;
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;
-  }
-  .footer-logo { font-size:15px; font-weight:700; }
-  .footer-links { display:flex; gap:28px; list-style:none; }
-  .footer-links a { text-decoration:none; font-size:13px; color:var(--gray-400); transition:color .2s; }
-  .footer-links a:hover { color:var(--black); }
-  .footer-right { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
-  .footer-copy { font-size:12px; color:var(--gray-400); }
-  .footer-founder { font-size:12px; color:var(--gray-400); }
-  .footer-founder a { color:var(--black); font-weight:700; text-decoration:none; }
-  .footer-founder a:hover { text-decoration:underline; }
+    .phone-topbar-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: 0.04em;
+      flex: 1;
+    }
 
-  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    /* Map area */
+    .map-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #e8e5dc;
+    }
 
-  @media(max-width:900px){
-    nav{padding:16px 24px;}
-    .nav-links{display:none;}
-    .android-banner{padding:10px 24px;}
-    .hero{grid-template-columns:1fr;padding:60px 24px;}
-    .hero-visual{display:none;}
-    .features{padding:60px 24px;}
-    .features-grid{grid-template-columns:1fr;}
-    .cta{grid-template-columns:1fr;padding:60px 24px;}
-    footer{padding:32px 24px;}
-    .footer-inner{flex-direction:column;align-items:flex-start;}
-    .footer-right{align-items:flex-start;}
-  }
-</style>
+    .map-svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+    }
+
+    /* Animated route draw */
+    .route-path {
+      stroke-dasharray: 320;
+      stroke-dashoffset: 320;
+      animation: drawRoute 2s 0.8s ease forwards;
+    }
+
+    @keyframes drawRoute { to { stroke-dashoffset: 0; } }
+
+    /* Moving car icon */
+    .car-ping {
+      animation: carMove 3s 2.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes carMove {
+      0%   { transform: translate(100px, 170px); }
+      100% { transform: translate(145px, 104px); }
+    }
+
+    /* Destination pulse ring */
+    .pin-pulse {
+      animation: pinPulse 1.6s 3.2s ease-out infinite;
+      transform-origin: 160px 94px;
+    }
+
+    @keyframes pinPulse {
+      0%   { r: 6;  opacity: 0.65; }
+      100% { r: 20; opacity: 0;    }
+    }
+
+    /* Bottom strip */
+    .bottom-strip {
+      background: var(--white);
+      border-top: 0.5px solid rgba(0,0,0,0.10);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .eta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .eta-label {
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .eta-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .eta-dist {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .driver-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .driver-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--black);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .driver-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .driver-name {
+      font-size: 10px;
+      font-weight: 400;
+      color: #555;
+      flex: 1;
+      letter-spacing: 0.03em;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--black);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.22; }
+    }
+
+    /* ── Headline ── */
+    h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.04;
+      text-align: center;
+      color: var(--black);
+      letter-spacing: -0.025em;
+      margin-bottom: 18px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--gray);
+      font-weight: 300;
+    }
+
+    /* ── Tagline ── */
+    .tagline {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--gray);
+      text-align: center;
+      line-height: 1.75;
+      margin-bottom: 40px;
+      max-width: 310px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    /* ── Download button ── */
+    .dl-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 18px;
+      padding: 20px 36px;
+      cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+      width: 100%;
+      max-width: 320px;
+      text-decoration: none;
+      transition: transform 0.15s ease, background 0.15s ease;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .dl-btn:hover  { background: #1e1e1e; transform: translateY(-2px); }
+    .dl-btn:active { transform: scale(0.98); }
+
+    .dl-icon-wrap {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .dl-icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dl-label {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .dl-sub {
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+    }
+
+    .dl-main {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    /* ── Meta pills ── */
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+      animation: fadeUp 0.6s 0.45s ease both;
+    }
+
+    .meta-pill {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--gray);
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: 100px;
+      padding: 5px 14px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* ── Feature cards ── */
+    .features {
+      display: flex;
+      gap: 12px;
+      margin-top: 36px;
+      width: 100%;
+      max-width: 320px;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+
+    .feat {
+      flex: 1;
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .feat-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--black);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feat-icon svg { display: block; }
+
+    .feat-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.3;
+    }
+
+    .feat-desc {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.55;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 52px;
+      animation: fadeUp 0.6s 0.6s ease both;
+    }
+
+    .footer-name {
+      font-size: 11px;
+      font-weight: 400;
+      color: #aaa;
+      letter-spacing: 0.06em;
+    }
+
+    .footer-name a {
+      color: #666;
+      text-decoration: none;
+      border-bottom: 0.5px solid rgba(0,0,0,0.22);
+      padding-bottom: 1px;
+      transition: color 0.15s;
+    }
+
+    .footer-name a:hover { color: var(--black); }
+
+    /* ── Animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
+  <div class="inner">
 
-<nav>
-  <div class="nav-logo">Where is Ride</div>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#download">Download</a></li>
-    <li><a href="https://github.com/heysanzu" target="_blank">GitHub</a></li>
-  </ul>
-  <button class="nav-cta" onclick="handleDownload()">Download APK</button>
-</nav>
-
-<div class="android-banner">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
-  Currently available for <strong>Android only</strong>. iOS coming soon.
-</div>
-
-<section style="border-bottom:1px solid var(--gray-200)">
-  <div class="hero">
-    <div>
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        Live tracking available now
+    <!-- Logo bar -->
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <img src="mapIcon.png" alt="Where is Ride icon" />
       </div>
-      <h1 class="hero-title">Know exactly<br><span>where your</span>ride is.</h1>
-      <p class="hero-sub">Real-time location updates, driver details, and arrival estimates — so you're never left wondering at the curb.</p>
-
-      <div class="hero-actions">
-        <button class="btn-android" onclick="handleDownload()">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
-          <span class="store-label">
-            <small>Download free for</small>
-            <strong>Android</strong>
-          </span>
-        </button>
-      </div>
-
-      <div class="dl-counter-row">
-        <span class="dl-num" id="dl-count">0</span>
-        <span class="dl-label">downloads</span>
-      </div>
+      <span class="logo-text">Where is Ride</span>
     </div>
 
-    <div class="hero-visual">
-      <div class="phone-wrap">
-        <div class="float-card fc-1">
-          <div class="fc-label">Arriving in</div>
-          <div class="fc-value">3 min</div>
+    <!-- Phone mockup -->
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+
+        <!-- In-app top bar -->
+        <div class="phone-topbar">
+          <div class="phone-topbar-icon">
+            <img src="mapIcon.png" alt="" />
+          </div>
+          <span class="phone-topbar-label">Where is Ride</span>
         </div>
-        <div class="float-card fc-2">
-          <div class="fc-label">Last known</div>
-          <div class="fc-value">0.4 km away</div>
+
+        <!-- Animated map -->
+        <div class="map-area">
+          <svg class="map-svg" viewBox="0 0 228 320" xmlns="http://www.w3.org/2000/svg">
+            <!-- Base -->
+            <rect width="228" height="320" fill="#e8e5dc"/>
+            <!-- Roads H -->
+            <rect x="0"   y="75"  width="228" height="11" fill="#fff" opacity="0.7"/>
+            <rect x="0"   y="140" width="228" height="9"  fill="#fff" opacity="0.7"/>
+            <rect x="0"   y="210" width="228" height="11" fill="#fff" opacity="0.7"/>
+            <rect x="0"   y="272" width="228" height="9"  fill="#fff" opacity="0.7"/>
+            <!-- Roads V -->
+            <rect x="54"  y="0" width="9"  height="320" fill="#fff" opacity="0.7"/>
+            <rect x="118" y="0" width="11" height="320" fill="#fff" opacity="0.7"/>
+            <rect x="182" y="0" width="9"  height="320" fill="#fff" opacity="0.7"/>
+            <!-- Blocks -->
+            <rect x="0"   y="0"   width="52" height="73"  rx="3" fill="#d8d4c8" opacity="0.6"/>
+            <rect x="65"  y="0"   width="51" height="73"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="131" y="0"   width="49" height="73"  rx="3" fill="#d8d4c8" opacity="0.6"/>
+            <rect x="0"   y="88"  width="52" height="50"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="65"  y="88"  width="51" height="50"  rx="3" fill="#d8d4c8" opacity="0.6"/>
+            <rect x="131" y="88"  width="49" height="50"  rx="3" fill="#d8d4c8" opacity="0.45"/>
+            <rect x="0"   y="152" width="52" height="56"  rx="3" fill="#d8d4c8" opacity="0.6"/>
+            <rect x="65"  y="152" width="51" height="56"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="131" y="152" width="49" height="56"  rx="3" fill="#d8d4c8" opacity="0.55"/>
+            <rect x="0"   y="223" width="52" height="47"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="65"  y="223" width="51" height="47"  rx="3" fill="#d8d4c8" opacity="0.6"/>
+            <rect x="131" y="223" width="49" height="47"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="193" y="88"  width="35" height="50"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+            <rect x="193" y="152" width="35" height="56"  rx="3" fill="#d8d4c8" opacity="0.5"/>
+
+            <!-- Animated route -->
+            <path class="route-path"
+              d="M 100 272 L 100 210 L 120 210 L 120 140 L 160 140 L 160 94"
+              fill="none" stroke="#0a0a0a" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Start dot -->
+            <circle cx="100" cy="272" r="6"  fill="#0a0a0a"/>
+            <circle cx="100" cy="272" r="11" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.28"/>
+
+            <!-- Animated car -->
+            <g class="car-ping">
+              <circle cx="0" cy="0" r="11" fill="#0a0a0a"/>
+              <rect x="-5.5" y="-3.5" width="11" height="7" rx="2.5" fill="#fff"/>
+            </g>
+
+            <!-- Destination pin -->
+            <path d="M160 74 C160 60 152 53 160 42 C168 53 168 60 160 74Z" fill="#0a0a0a"/>
+            <circle cx="160" cy="57" r="4.5" fill="#fff"/>
+
+            <!-- Pulse at destination -->
+            <circle class="pin-pulse" cx="160" cy="94" r="6" fill="none" stroke="#0a0a0a" stroke-width="1.8"/>
+          </svg>
         </div>
-        <div class="phone-outer">
-          <div class="phone-inner">
-            <div class="phone-screen">
-              <div class="phone-map">
-                <svg viewBox="0 0 260 400" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="260" height="400" fill="#f0efeb"/>
-                  <line x1="0" y1="120" x2="260" y2="120" stroke="#fff" stroke-width="8"/>
-                  <line x1="0" y1="200" x2="260" y2="200" stroke="#fff" stroke-width="12"/>
-                  <line x1="0" y1="280" x2="260" y2="280" stroke="#fff" stroke-width="8"/>
-                  <line x1="80" y1="0" x2="80" y2="400" stroke="#fff" stroke-width="8"/>
-                  <line x1="160" y1="0" x2="160" y2="400" stroke="#fff" stroke-width="12"/>
-                  <rect x="10" y="130" width="60" height="60" rx="4" fill="#e5e3dd"/>
-                  <rect x="90" y="130" width="60" height="60" rx="4" fill="#e5e3dd"/>
-                  <rect x="170" y="130" width="80" height="60" rx="4" fill="#e5e3dd"/>
-                  <rect x="10" y="210" width="60" height="60" rx="4" fill="#e5e3dd"/>
-                  <rect x="90" y="210" width="60" height="60" rx="4" fill="#e5e3dd"/>
-                  <rect x="170" y="210" width="80" height="60" rx="4" fill="#dcedc8" opacity="0.6"/>
-                  <polyline points="60,320 60,200 130,200 130,140 200,140" stroke="#0a0a0a" stroke-width="3" fill="none" stroke-dasharray="6 4" stroke-linecap="round"/>
-                  <circle cx="60" cy="320" r="14" fill="#0a0a0a"/>
-                  <path d="M54 322 h12 M57 319 h6 l1 3 h-8 z" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                  <circle cx="200" cy="140" r="10" fill="white" stroke="#0a0a0a" stroke-width="2"/>
-                  <circle cx="200" cy="140" r="4" fill="#0a0a0a"/>
-                  <circle cx="60" cy="320" r="22" fill="#0a0a0a" opacity="0.08"/>
-                </svg>
-                <div class="phone-status">
-                  <span>9:41</span>
-                  <span><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><rect x="0" y="6" width="2" height="4" rx="1" fill="#0a0a0a"/><rect x="3" y="4" width="2" height="6" rx="1" fill="#0a0a0a"/><rect x="6" y="2" width="2" height="8" rx="1" fill="#0a0a0a"/><rect x="9" y="0" width="2" height="10" rx="1" fill="#0a0a0a"/></svg></span>
-                </div>
-              </div>
-              <div class="phone-bottom">
-                <div class="ride-card">
-                  <div class="ride-header">YOUR RIDE</div>
-                  <div class="ride-info">
-                    <div class="ride-driver">
-                      <div class="driver-avatar"></div>
-                      <div>
-                        <div class="driver-name">Driver</div>
-                        <div class="driver-plate">MH 04 AB 1234</div>
-                      </div>
-                    </div>
-                    <div class="ride-eta">
-                      <div class="eta-num">3</div>
-                      <div class="eta-label">MIN AWAY</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+        <!-- Bottom strip -->
+        <div class="bottom-strip">
+          <div class="eta-row">
+            <div>
+              <div class="eta-label">ETA</div>
+              <div class="eta-value">4 min</div>
+            </div>
+            <div style="text-align:right">
+              <div class="eta-label">Distance</div>
+              <div class="eta-dist">1.2 km</div>
             </div>
           </div>
+          <div class="driver-row">
+            <div class="driver-avatar">
+              <img src="mapIcon.png" alt="" />
+            </div>
+            <span class="driver-name">Driver nearby</span>
+            <div class="status-dot"></div>
+          </div>
         </div>
+
       </div>
     </div>
+
+    <!-- Headline -->
+    <h1>
+      Track your ride.<br>
+      <span>In real time.</span>
+    </h1>
+
+    <!-- Tagline -->
+    <p class="tagline">
+      Know exactly where your ride is — every second of the way. No guessing, no calling, just a live map.
+    </p>
+
+    <!-- Download button -->
+    <a class="dl-btn" href="#" onclick="this.querySelector('.dl-main').textContent='Coming soon...'; return false;">
+      <div class="dl-icon-wrap">
+        <img src="mapIcon.png" alt="Where is Ride" />
+      </div>
+      <div class="dl-label">
+        <span class="dl-sub">Download for</span>
+        <span class="dl-main">Android</span>
+      </div>
+    </a>
+
+    <!-- Meta pills -->
+    <div class="meta-row">
+      <span class="meta-pill">Free</span>
+      <span class="meta-pill">Android 8+</span>
+      <span class="meta-pill">v1.0</span>
+    </div>
+
+    <!-- Feature cards -->
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <circle cx="7.5" cy="6" r="2.8" stroke="#fff" stroke-width="1.3"/>
+            <path d="M7.5 1C4.5 1 2 3.5 2 6.5c0 3.5 5.5 8.5 5.5 8.5s5.5-5 5.5-8.5C13 3.5 10.5 1 7.5 1z" stroke="#fff" stroke-width="1.3" fill="none"/>
+          </svg>
+        </div>
+        <div class="feat-title">Live map</div>
+        <div class="feat-desc">Real-time driver location</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <circle cx="7.5" cy="7.5" r="5.5" stroke="#fff" stroke-width="1.3"/>
+            <path d="M7.5 4v3.5l2.5 2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="feat-title">ETA tracking</div>
+        <div class="feat-desc">Accurate arrival time</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 11l3.5-3.5 2.5 2.5L12 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feat-title">Status alerts</div>
+        <div class="feat-desc">Every trip update</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span class="footer-name">
+        by Shahnewaz &nbsp;&middot;&nbsp;
+        <a href="https://github.com/heysanzu" target="_blank" rel="noopener">@heysanzu</a>
+      </span>
+    </div>
+
   </div>
-</section>
-
-<div class="strip">
-  <div class="strip-inner">
-    <span><b>Live GPS Tracking</b></span><span>Driver Verification</span>
-    <span><b>Real-time ETA</b></span><span>SOS Button</span>
-    <span><b>Route Sharing</b></span><span>Fare Breakdown</span>
-    <span><b>Android Only</b></span><span>Free Download</span>
-    <span><b>Live GPS Tracking</b></span><span>Driver Verification</span>
-    <span><b>Real-time ETA</b></span><span>SOS Button</span>
-    <span><b>Route Sharing</b></span><span>Fare Breakdown</span>
-    <span><b>Android Only</b></span><span>Free Download</span>
-  </div>
-</div>
-
-<section class="features" id="features">
-  <div class="section-label">Why it works</div>
-  <h2 class="section-title">Everything you need, nothing you don't.</h2>
-  <div class="features-grid">
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
-      <div class="feature-name">Live GPS Tracking</div>
-      <div class="feature-desc">Watch your ride move on the map in real time. No guessing, no refreshing — it just works.</div>
-    </div>
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="feature-name">Driver Verified</div>
-      <div class="feature-desc">See your driver's details before they arrive. Know exactly who is picking you up.</div>
-    </div>
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="feature-name">Accurate ETA</div>
-      <div class="feature-desc">Arrival times recalculate with traffic, so the minute shown is the minute you can rely on.</div>
-    </div>
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="feature-name">Share Your Ride</div>
-      <div class="feature-desc">Send a live trip link to anyone. They see exactly where you are, no app required on their end.</div>
-    </div>
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="white" stroke-width="2" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
-      <div class="feature-name">SOS Alert</div>
-      <div class="feature-desc">One tap sends your location and ride details to emergency contacts and our safety team.</div>
-    </div>
-
-    <div class="feature-item">
-      <div class="feature-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" stroke="white" stroke-width="2"/><line x1="1" y1="10" x2="23" y2="10" stroke="white" stroke-width="2"/></svg>
-      </div>
-      <div class="feature-name">Full Fare Detail</div>
-      <div class="feature-desc">See the breakdown before and after. Base fare, surge, tolls — nothing hidden, nothing vague.</div>
-    </div>
-
-  </div>
-</section>
-
-<section style="border-top:1px solid var(--gray-200)" id="download">
-  <div class="cta">
-    <div>
-      <h2 class="cta-title">Never miss your<br><em>ride again.</em></h2>
-    </div>
-    <div>
-      <p class="cta-desc">Download Where is Ride free for Android and get real-time visibility into every trip. iOS version is in development.</p>
-      <button class="btn-android" onclick="handleDownload()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-1.99-.97-3.75-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
-        <span class="store-label">
-          <small>Download free for</small>
-          <strong>Android</strong>
-        </span>
-      </button>
-
-      <div class="dl-counter-row" style="margin-top:24px">
-        <span class="dl-num" id="dl-count-2">0</span>
-        <span class="dl-label">downloads</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-logo">Where is Ride</div>
-    <ul class="footer-links">
-      <li><a href="#">Privacy</a></li>
-      <li><a href="#">Terms</a></li>
-      <li><a href="#">Safety</a></li>
-      <li><a href="https://github.com/heysanzu" target="_blank">GitHub</a></li>
-    </ul>
-    <div class="footer-right">
-      <div class="footer-copy">2026 Where is Ride. All rights reserved.</div>
-      <div class="footer-founder">Built by <a href="https://github.com/heysanzu" target="_blank">@heysanzu</a></div>
-    </div>
-  </div>
-</footer>
-
-<div class="toast" id="toast">Download started — check your notifications</div>
-
-<script>
-  const KEY = 'wir_downloads';
-
-  function getCount() {
-    return parseInt(localStorage.getItem(KEY) || '0', 10);
-  }
-
-  function renderCount() {
-    const n = getCount();
-    const txt = n.toLocaleString();
-    document.getElementById('dl-count').textContent = txt;
-    document.getElementById('dl-count-2').textContent = txt;
-  }
-
-  function showToast() {
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3200);
-  }
-
-  function animateCount(el, from, to) {
-    const dur = 600;
-    const start = performance.now();
-    function step(now) {
-      const p = Math.min((now - start) / dur, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(from + (to - from) * ease).toLocaleString();
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function handleDownload() {
-    const prev = getCount();
-    const next = prev + 1;
-    localStorage.setItem(KEY, next);
-
-    const els = [document.getElementById('dl-count'), document.getElementById('dl-count-2')];
-    els.forEach(el => animateCount(el, prev, next));
-
-    showToast();
-    // Uncomment and replace URL when APK is ready:
-    // window.location.href = 'https://your-server.com/whereisride.apk';
-  }
-
-  renderCount();
-</script>
-
 </body>
 </html>
