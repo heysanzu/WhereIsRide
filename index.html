@@ -1,652 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Where is Ride</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where is Ride — Real-time Ride Tracking</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    background: #fff;
+    color: #000;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-  <!-- Favicon using the map icon as base64 -->
-  <link rel="icon" type="image/png" href="mapIcon.png" />
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    border-bottom: 2.5px solid #000;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    color: #000;
+  }
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+    background: #000;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Comic Sans MS', cursive;
+    font-size: 14px;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+  .nav-links a:hover { border-color: #000; }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 40px 60px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-family: 'Comic Sans MS', cursive;
+    border: 2px solid #000;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  .hero-title {
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .hero-title span {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 6px;
+  }
+  .hero-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 36px;
+    max-width: 440px;
+  }
+  .btn-group {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    font-family: 'Comic Sans MS', cursive;
+    background: #000;
+    color: #fff;
+    border: 2.5px solid #000;
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-primary:hover { background: #fff; color: #000; }
+  .btn-secondary {
+    font-family: 'Comic Sans MS', cursive;
+    background: #fff;
+    color: #000;
+    border: 2.5px solid #000;
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-secondary:hover { background: #000; color: #fff; }
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* PHONE MOCKUP */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .phone-frame {
+    width: 220px;
+    height: 440px;
+    border: 4px solid #000;
+    border-radius: 36px;
+    background: #fff;
+    position: relative;
+    box-shadow: 10px 10px 0px #000;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    width: 70px;
+    height: 22px;
+    background: #000;
+    border-radius: 0 0 16px 16px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .phone-screen {
+    padding: 10px 12px;
+    height: calc(100% - 22px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .phone-topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 8px;
+  }
+  .phone-topbar-icon {
+    width: 24px;
+    height: 24px;
+    background: #000;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-topbar-title {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Comic Sans MS', cursive;
+  }
+  .map-area {
+    width: 100%;
+    height: 150px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background: #f5f5f5;
+  }
+  .map-grid-line { position: absolute; background: #e0e0e0; }
+  .map-grid-h { width: 100%; height: 1px; left: 0; }
+  .map-grid-v { height: 100%; width: 1px; top: 0; }
+  .map-road-h {
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
+    left: 0; right: 0;
+  }
+  .map-road-v {
+    position: absolute;
+    width: 4px;
+    background: #ccc;
+    border-radius: 2px;
+    top: 0; bottom: 0;
+  }
+  .map-pin {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #000;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    top: 50px;
+    left: 80px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  }
+  .pulse-ring {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    top: 43px;
+    left: 73px;
+    animation: pulse 1.8s infinite;
+    opacity: 0.4;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+  .ride-card {
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Comic Sans MS', cursive;
+  }
+  .ride-card-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    flex-shrink: 0;
+  }
+  .ride-card-dot.active { background: #000; }
+  .ride-card-info { flex: 1; }
+  .ride-card-name { font-size: 10px; font-weight: 700; }
+  .ride-card-loc { font-size: 9px; color: #555; }
+  .ride-card-status {
+    font-size: 8px;
+    border: 1.5px solid #000;
+    border-radius: 20px;
+    padding: 2px 6px;
+  }
+  .phone-btn {
+    background: #000;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    font-size: 10px;
+    font-family: 'Comic Sans MS', cursive;
+    margin-top: auto;
+  }
+  .deco-circle {
+    width: 140px;
+    height: 140px;
+    border: 3px solid #000;
+    border-radius: 50%;
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    z-index: -1;
+  }
+  .deco-square {
+    width: 70px;
+    height: 70px;
+    border: 3px solid #000;
+    position: absolute;
+    bottom: 20px;
+    left: -20px;
+    z-index: -1;
+    transform: rotate(15deg);
+  }
 
-    :root {
-      --black: #0a0a0a;
-      --white: #ffffff;
-      --gray:  #888888;
-      --bg:    #f5f5f3;
-      --border: rgba(0,0,0,0.12);
-    }
+  /* STATS BAR */
+  .stats-bar {
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    padding: 24px 40px;
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'Comic Sans MS', cursive;
+    display: block;
+  }
+  .stat-label {
+    font-size: 12px;
+    opacity: 0.7;
+    font-family: 'Comic Sans MS', cursive;
+  }
 
-    html, body {
-      min-height: 100vh;
-      font-family: 'Roboto', sans-serif;
-      background: var(--white);
-      color: var(--black);
-    }
+  /* FEATURES */
+  .features {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-label {
+    font-size: 12px;
+    font-family: 'Comic Sans MS', cursive;
+    border-left: 4px solid #000;
+    padding-left: 10px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .section-title {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 700;
+    margin-bottom: 50px;
+    letter-spacing: -0.5px;
+    max-width: 500px;
+    line-height: 1.2;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    border: 2.5px solid #000;
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    background: #fff;
+    color: #000;
+  }
+  .feature-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 6px 6px 0 #000;
+  }
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border: 2.5px solid #000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .feature-card.dark { background: #000; color: #fff; }
+  .feature-card.dark .feature-icon { border-color: #fff; }
+  .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; line-height: 1.6; opacity: 0.75; }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 56px 24px 80px;
-      position: relative;
-      overflow-x: hidden;
-    }
+  /* HOW IT WORKS */
+  .how {
+    background: #000;
+    color: #fff;
+    padding: 80px 40px;
+  }
+  .how-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .how .section-label { border-left-color: #fff; }
+  .how .section-title { color: #fff; }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+  .step { display: flex; flex-direction: column; gap: 12px; }
+  .step-num {
+    font-size: 48px;
+    font-weight: 900;
+    opacity: 0.2;
+    font-family: 'Comic Sans MS', cursive;
+    line-height: 1;
+  }
+  .step-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .step-desc { font-size: 13px; line-height: 1.6; color: #aaa; }
+  .step-divider { width: 30px; height: 3px; background: #fff; }
 
-    /* Dot-grid background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-      z-index: 0;
-    }
+  /* DOWNLOAD CTA */
+  .download-cta {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+    border-bottom: 2.5px solid #000;
+  }
+  .cta-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    max-width: 500px;
+  }
+  .cta-sub { font-size: 15px; color: #555; margin-top: 10px; }
+  .download-badges { display: flex; flex-direction: column; gap: 12px; }
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2.5px solid #000;
+    border-radius: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+    transition: background 0.15s, color 0.15s;
+    min-width: 180px;
+  }
+  .badge:hover { background: #000; color: #fff; }
+  .badge:hover .badge-icon path,
+  .badge:hover .badge-icon rect { fill: #fff; }
+  .badge-text { display: flex; flex-direction: column; }
+  .badge-sub { font-size: 10px; opacity: 0.6; font-family: 'Comic Sans MS', cursive; }
+  .badge-name { font-size: 14px; font-weight: 700; font-family: 'Comic Sans MS', cursive; }
 
-    .inner {
-      position: relative;
-      z-index: 1;
-      max-width: 480px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  /* FOOTER */
+  footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #555;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
-    /* ── Logo bar ── */
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 40px;
-      animation: fadeUp 0.6s ease both;
-    }
-
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .logo-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .logo-text {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--black);
-    }
-
-    /* ── Phone frame ── */
-    .phone-frame {
-      width: 260px;
-      height: 460px;
-      background: var(--black);
-      border-radius: 40px;
-      padding: 16px;
-      box-shadow:
-        0 0 0 1px rgba(0,0,0,0.14),
-        0 40px 100px rgba(0,0,0,0.22);
-      position: relative;
-      margin-bottom: 56px;
-      animation: fadeUp 0.6s 0.1s ease both;
-      flex-shrink: 0;
-    }
-
-    .phone-notch {
-      width: 64px;
-      height: 7px;
-      background: var(--black);
-      border-radius: 4px;
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-    }
-
-    .phone-screen {
-      background: var(--bg);
-      border-radius: 28px;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* In-app top bar */
-    .phone-topbar {
-      background: var(--white);
-      padding: 30px 14px 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 0.5px solid rgba(0,0,0,0.08);
-      flex-shrink: 0;
-    }
-
-    .phone-topbar-icon {
-      width: 20px;
-      height: 20px;
-      border-radius: 5px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .phone-topbar-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .phone-topbar-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--black);
-      letter-spacing: 0.04em;
-      flex: 1;
-    }
-
-    /* Map area */
-    .map-area {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      background: #e8e5dc;
-    }
-
-    .map-svg {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      inset: 0;
-    }
-
-    /* Animated route draw */
-    .route-path {
-      stroke-dasharray: 320;
-      stroke-dashoffset: 320;
-      animation: drawRoute 2s 0.8s ease forwards;
-    }
-
-    @keyframes drawRoute { to { stroke-dashoffset: 0; } }
-
-    /* Moving car icon */
-    .car-ping {
-      animation: carMove 3s 2.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes carMove {
-      0%   { transform: translate(100px, 170px); }
-      100% { transform: translate(145px, 104px); }
-    }
-
-    /* Destination pulse ring */
-    .pin-pulse {
-      animation: pinPulse 1.6s 3.2s ease-out infinite;
-      transform-origin: 160px 94px;
-    }
-
-    @keyframes pinPulse {
-      0%   { r: 6;  opacity: 0.65; }
-      100% { r: 20; opacity: 0;    }
-    }
-
-    /* Bottom strip */
-    .bottom-strip {
-      background: var(--white);
-      border-top: 0.5px solid rgba(0,0,0,0.10);
-      padding: 14px 14px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .eta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
-    .eta-label {
-      font-size: 9px;
-      font-weight: 400;
-      color: var(--gray);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .eta-value {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--black);
-    }
-
-    .eta-dist {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--black);
-    }
-
-    .driver-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .driver-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--black);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .driver-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .driver-name {
-      font-size: 10px;
-      font-weight: 400;
-      color: #555;
-      flex: 1;
-      letter-spacing: 0.03em;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--black);
-      animation: blink 1.4s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.22; }
-    }
-
-    /* ── Headline ── */
-    h1 {
-      font-size: 42px;
-      font-weight: 900;
-      line-height: 1.04;
-      text-align: center;
-      color: var(--black);
-      letter-spacing: -0.025em;
-      margin-bottom: 18px;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-
-    h1 span {
-      display: block;
-      color: var(--gray);
-      font-weight: 300;
-    }
-
-    /* ── Tagline ── */
-    .tagline {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--gray);
-      text-align: center;
-      line-height: 1.75;
-      margin-bottom: 40px;
-      max-width: 310px;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-
-    /* ── Download button ── */
-    .dl-btn {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      background: var(--black);
-      color: var(--white);
-      border: none;
-      border-radius: 18px;
-      padding: 20px 36px;
-      cursor: pointer;
-      font-family: 'Roboto', sans-serif;
-      width: 100%;
-      max-width: 320px;
-      text-decoration: none;
-      transition: transform 0.15s ease, background 0.15s ease;
-      animation: fadeUp 0.6s 0.4s ease both;
-    }
-
-    .dl-btn:hover  { background: #1e1e1e; transform: translateY(-2px); }
-    .dl-btn:active { transform: scale(0.98); }
-
-    .dl-icon-wrap {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      overflow: hidden;
-      flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-
-    .dl-icon-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .dl-label {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-    }
-
-    .dl-sub {
-      font-size: 10px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.13em;
-    }
-
-    .dl-main {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    /* ── Meta pills ── */
-    .meta-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 22px;
-      animation: fadeUp 0.6s 0.45s ease both;
-    }
-
-    .meta-pill {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--gray);
-      border: 0.5px solid rgba(0,0,0,0.15);
-      border-radius: 100px;
-      padding: 5px 14px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-    }
-
-    /* ── Feature cards ── */
-    .features {
-      display: flex;
-      gap: 12px;
-      margin-top: 36px;
-      width: 100%;
-      max-width: 320px;
-      animation: fadeUp 0.6s 0.5s ease both;
-    }
-
-    .feat {
-      flex: 1;
-      border: 0.5px solid var(--border);
-      border-radius: 16px;
-      padding: 16px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .feat-icon {
-      width: 30px;
-      height: 30px;
-      background: var(--black);
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .feat-icon svg { display: block; }
-
-    .feat-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--black);
-      line-height: 1.3;
-    }
-
-    .feat-desc {
-      font-size: 10px;
-      font-weight: 400;
-      color: var(--gray);
-      line-height: 1.55;
-    }
-
-    /* ── Footer ── */
-    .footer {
-      margin-top: 52px;
-      animation: fadeUp 0.6s 0.6s ease both;
-    }
-
-    .footer-name {
-      font-size: 11px;
-      font-weight: 400;
-      color: #aaa;
-      letter-spacing: 0.06em;
-    }
-
-    .footer-name a {
-      color: #666;
-      text-decoration: none;
-      border-bottom: 0.5px solid rgba(0,0,0,0.22);
-      padding-bottom: 1px;
-      transition: color 0.15s;
-    }
-
-    .footer-name a:hover { color: var(--black); }
-
-    /* ── Animation ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  @media (max-width: 700px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px; }
+    .hero-right { display: none; }
+    .stats-bar { gap: 30px; padding: 20px; }
+    .features { padding: 50px 20px; }
+    .how { padding: 50px 20px; }
+    .download-cta { grid-template-columns: 1fr; padding: 50px 20px; }
+    .download-badges { flex-direction: row; flex-wrap: wrap; }
+    footer { padding: 20px; flex-direction: column; text-align: center; }
+  }
+</style>
 </head>
 <body>
-  <div class="inner">
 
-    <!-- Logo bar -->
-    <div class="logo-wrap">
-      <div class="logo-icon">
-        <img src="mapIcon.png" alt="Where is Ride icon" />
-      </div>
-      <span class="logo-text">Where is Ride</span>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white"/>
+        <circle cx="12" cy="9" r="2.5" fill="#000"/>
+        <path d="M19 3l2 2-2 2M5 3L3 5l2 2" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
+    Where is Ride
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#download">Download</a></li>
+  </ul>
+</nav>
 
-    <!-- Phone mockup -->
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Real-time ride tracking</div>
+    <h1 class="hero-title">Know <span>exactly</span> where your ride is.</h1>
+    <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts — all in one clean app.</p>
+    <div class="btn-group">
+      <a href="#download" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+        </svg>
+        App Store
+      </a>
+      <a href="#download" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
+        </svg>
+        Google Play
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="deco-circle"></div>
+    <div class="deco-square"></div>
     <div class="phone-frame">
       <div class="phone-notch"></div>
       <div class="phone-screen">
-
-        <!-- In-app top bar -->
         <div class="phone-topbar">
           <div class="phone-topbar-icon">
-            <img src="mapIcon.png" alt="" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white"/>
+              <circle cx="12" cy="9" r="2.5" fill="#000"/>
+            </svg>
           </div>
-          <span class="phone-topbar-label">Where is Ride</span>
+          <span class="phone-topbar-title">Where is Ride</span>
         </div>
-
-        <!-- Animated map -->
         <div class="map-area">
-          <svg class="map-svg" viewBox="0 0 228 320" xmlns="http://www.w3.org/2000/svg">
-            <!-- Base -->
-            <rect width="228" height="320" fill="#e8e5dc"/>
-            <!-- Roads H -->
-            <rect x="0"   y="75"  width="228" height="11" fill="#fff" opacity="0.7"/>
-            <rect x="0"   y="140" width="228" height="9"  fill="#fff" opacity="0.7"/>
-            <rect x="0"   y="210" width="228" height="11" fill="#fff" opacity="0.7"/>
-            <rect x="0"   y="272" width="228" height="9"  fill="#fff" opacity="0.7"/>
-            <!-- Roads V -->
-            <rect x="54"  y="0" width="9"  height="320" fill="#fff" opacity="0.7"/>
-            <rect x="118" y="0" width="11" height="320" fill="#fff" opacity="0.7"/>
-            <rect x="182" y="0" width="9"  height="320" fill="#fff" opacity="0.7"/>
-            <!-- Blocks -->
-            <rect x="0"   y="0"   width="52" height="73"  rx="3" fill="#d8d4c8" opacity="0.6"/>
-            <rect x="65"  y="0"   width="51" height="73"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="131" y="0"   width="49" height="73"  rx="3" fill="#d8d4c8" opacity="0.6"/>
-            <rect x="0"   y="88"  width="52" height="50"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="65"  y="88"  width="51" height="50"  rx="3" fill="#d8d4c8" opacity="0.6"/>
-            <rect x="131" y="88"  width="49" height="50"  rx="3" fill="#d8d4c8" opacity="0.45"/>
-            <rect x="0"   y="152" width="52" height="56"  rx="3" fill="#d8d4c8" opacity="0.6"/>
-            <rect x="65"  y="152" width="51" height="56"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="131" y="152" width="49" height="56"  rx="3" fill="#d8d4c8" opacity="0.55"/>
-            <rect x="0"   y="223" width="52" height="47"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="65"  y="223" width="51" height="47"  rx="3" fill="#d8d4c8" opacity="0.6"/>
-            <rect x="131" y="223" width="49" height="47"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="193" y="88"  width="35" height="50"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-            <rect x="193" y="152" width="35" height="56"  rx="3" fill="#d8d4c8" opacity="0.5"/>
-
-            <!-- Animated route -->
-            <path class="route-path"
-              d="M 100 272 L 100 210 L 120 210 L 120 140 L 160 140 L 160 94"
-              fill="none" stroke="#0a0a0a" stroke-width="3.5"
-              stroke-linecap="round" stroke-linejoin="round"/>
-
-            <!-- Start dot -->
-            <circle cx="100" cy="272" r="6"  fill="#0a0a0a"/>
-            <circle cx="100" cy="272" r="11" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.28"/>
-
-            <!-- Animated car -->
-            <g class="car-ping">
-              <circle cx="0" cy="0" r="11" fill="#0a0a0a"/>
-              <rect x="-5.5" y="-3.5" width="11" height="7" rx="2.5" fill="#fff"/>
-            </g>
-
-            <!-- Destination pin -->
-            <path d="M160 74 C160 60 152 53 160 42 C168 53 168 60 160 74Z" fill="#0a0a0a"/>
-            <circle cx="160" cy="57" r="4.5" fill="#fff"/>
-
-            <!-- Pulse at destination -->
-            <circle class="pin-pulse" cx="160" cy="94" r="6" fill="none" stroke="#0a0a0a" stroke-width="1.8"/>
-          </svg>
+          <div class="map-grid-h map-grid-line" style="top:33%"></div>
+          <div class="map-grid-h map-grid-line" style="top:66%"></div>
+          <div class="map-grid-v map-grid-line" style="left:33%"></div>
+          <div class="map-grid-v map-grid-line" style="left:66%"></div>
+          <div class="map-road-h" style="top:calc(33% - 2px)"></div>
+          <div class="map-road-h" style="top:calc(66% - 2px)"></div>
+          <div class="map-road-v" style="left:calc(33% - 2px)"></div>
+          <div class="map-road-v" style="left:calc(66% - 2px)"></div>
+          <div class="pulse-ring"></div>
+          <div class="map-pin"></div>
         </div>
-
-        <!-- Bottom strip -->
-        <div class="bottom-strip">
-          <div class="eta-row">
-            <div>
-              <div class="eta-label">ETA</div>
-              <div class="eta-value">4 min</div>
-            </div>
-            <div style="text-align:right">
-              <div class="eta-label">Distance</div>
-              <div class="eta-dist">1.2 km</div>
-            </div>
+        <div class="ride-card">
+          <div class="ride-card-dot active"></div>
+          <div class="ride-card-info">
+            <div class="ride-card-name">Bus 47 — Main Route</div>
+            <div class="ride-card-loc">Near Station Rd, 2 min away</div>
           </div>
-          <div class="driver-row">
-            <div class="driver-avatar">
-              <img src="mapIcon.png" alt="" />
-            </div>
-            <span class="driver-name">Driver nearby</span>
-            <div class="status-dot"></div>
-          </div>
+          <div class="ride-card-status">Live</div>
         </div>
-
+        <div class="ride-card">
+          <div class="ride-card-dot"></div>
+          <div class="ride-card-info">
+            <div class="ride-card-name">Auto #112</div>
+            <div class="ride-card-loc">Idle at Depot</div>
+          </div>
+          <div class="ride-card-status">Idle</div>
+        </div>
+        <div class="phone-btn">Track Ride</div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Headline -->
-    <h1>
-      Track your ride.<br>
-      <span>In real time.</span>
-    </h1>
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">Real-time</span>
+    <span class="stat-label">Live tracking</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">Zero</span>
+    <span class="stat-label">Guesswork</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">Free</span>
+    <span class="stat-label">Always</span>
+  </div>
+</div>
 
-    <!-- Tagline -->
-    <p class="tagline">
-      Know exactly where your ride is — every second of the way. No guessing, no calling, just a live map.
-    </p>
-
-    <!-- Download button -->
-    <a class="dl-btn" href="#" onclick="this.querySelector('.dl-main').textContent='Coming soon...'; return false;">
-      <div class="dl-icon-wrap">
-        <img src="mapIcon.png" alt="Where is Ride" />
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">What it does</div>
+  <h2 class="section-title">Everything you need to track any ride</h2>
+  <div class="features-grid">
+    <div class="feature-card dark">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.5" stroke-dasharray="2 3"/>
+        </svg>
       </div>
-      <div class="dl-label">
-        <span class="dl-sub">Download for</span>
-        <span class="dl-main">Android</span>
+      <div class="feature-title">Live GPS tracking</div>
+      <div class="feature-desc">See your vehicle move on the map in real time, updated every few seconds.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title">Instant alerts</div>
+      <div class="feature-desc">Get notified when your ride is arriving, delayed, or has changed route.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="16" rx="3" stroke="#000" stroke-width="2"/>
+          <path d="M8 2v4M16 2v4M3 10h18" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title">Trip history</div>
+      <div class="feature-desc">Review past journeys, routes taken, and timing logs at any time.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="9" cy="7" r="4" stroke="#000" stroke-width="2"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="feature-title">Share with others</div>
+      <div class="feature-desc">Share live ride status with friends or family with one tap, no account needed.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Up and running in three steps</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-divider"></div>
+        <div class="step-title">Download the app</div>
+        <div class="step-desc">Available on Android. Free to install, no subscription required.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-divider"></div>
+        <div class="step-title">Find your ride</div>
+        <div class="step-desc">Search by vehicle name, route number, or scan a QR code at the stop.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-divider"></div>
+        <div class="step-title">Track in real time</div>
+        <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section class="download-cta" id="download">
+  <div>
+    <h2 class="cta-title">Stop waiting in the dark. Track your ride now.</h2>
+    <p class="cta-sub">Free download. No ads. No subscription.</p>
+  </div>
+  <div class="download-badges">
+    <a href="#" class="badge">
+      <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+      </svg>
+      <div class="badge-text">
+        <span class="badge-sub">Download on the</span>
+        <span class="badge-name">App Store</span>
       </div>
     </a>
-
-    <!-- Meta pills -->
-    <div class="meta-row">
-      <span class="meta-pill">Free</span>
-      <span class="meta-pill">Android 8+</span>
-      <span class="meta-pill">v1.0</span>
-    </div>
-
-    <!-- Feature cards -->
-    <div class="features">
-      <div class="feat">
-        <div class="feat-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <circle cx="7.5" cy="6" r="2.8" stroke="#fff" stroke-width="1.3"/>
-            <path d="M7.5 1C4.5 1 2 3.5 2 6.5c0 3.5 5.5 8.5 5.5 8.5s5.5-5 5.5-8.5C13 3.5 10.5 1 7.5 1z" stroke="#fff" stroke-width="1.3" fill="none"/>
-          </svg>
-        </div>
-        <div class="feat-title">Live map</div>
-        <div class="feat-desc">Real-time driver location</div>
+    <a href="#" class="badge">
+      <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
+      </svg>
+      <div class="badge-text">
+        <span class="badge-sub">Get it on</span>
+        <span class="badge-name">Google Play</span>
       </div>
-      <div class="feat">
-        <div class="feat-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <circle cx="7.5" cy="7.5" r="5.5" stroke="#fff" stroke-width="1.3"/>
-            <path d="M7.5 4v3.5l2.5 2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="feat-title">ETA tracking</div>
-        <div class="feat-desc">Accurate arrival time</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M2 11l3.5-3.5 2.5 2.5L12 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="feat-title">Status alerts</div>
-        <div class="feat-desc">Every trip update</div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <span class="footer-name">
-        by Shahnewaz &nbsp;&middot;&nbsp;
-        <a href="https://github.com/heysanzu" target="_blank" rel="noopener">@heysanzu</a>
-      </span>
-    </div>
-
+    </a>
   </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Where is Ride — built for real commuters</span>
+  <span>2025 — Free to use, always</span>
+</footer>
+
 </body>
 </html>
