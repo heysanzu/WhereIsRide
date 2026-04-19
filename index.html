@@ -3,481 +3,328 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Where is Ride — Real-time Ride Tracking</title>
+<title>Where is Ride</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     font-family: 'Comic Sans MS', 'Comic Sans', cursive;
     background: #fff;
     color: #000;
     min-height: 100vh;
-    overflow-x: hidden;
   }
 
+  /* NAV */
   nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 18px 40px;
     border-bottom: 2.5px solid #000;
-    background: #fff;
-    position: sticky;
-    top: 0;
-    z-index: 100;
   }
+
   .nav-logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
-    letter-spacing: -0.5px;
     text-decoration: none;
     color: #000;
   }
-  .nav-icon {
-    width: 32px;
-    height: 32px;
-    background: #000;
+
+  .nav-logo img {
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    border: 2px solid #000;
   }
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-  .nav-links a {
+
+  .nav-link {
     font-family: 'Comic Sans MS', cursive;
     font-size: 14px;
     color: #000;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
-    padding-bottom: 2px;
-    transition: border-color 0.2s;
+    border: 2px solid #000;
+    padding: 6px 16px;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
   }
-  .nav-links a:hover { border-color: #000; }
+
+  .nav-link:hover { background: #000; color: #fff; }
 
   /* HERO */
   .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    max-width: 1100px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 80px 40px 60px;
+    padding: 90px 40px 80px;
+    text-align: center;
   }
+
+  .hero-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    border: 3px solid #000;
+    margin: 0 auto 28px;
+    display: block;
+    box-shadow: 5px 5px 0 #000;
+  }
+
   .hero-tag {
     display: inline-block;
     font-size: 12px;
-    font-family: 'Comic Sans MS', cursive;
     border: 2px solid #000;
-    padding: 4px 12px;
+    padding: 4px 14px;
     border-radius: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
     letter-spacing: 0.5px;
   }
+
   .hero-title {
-    font-size: clamp(36px, 5vw, 58px);
+    font-size: clamp(32px, 6vw, 54px);
     font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -1.5px;
-    margin-bottom: 20px;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
   }
-  .hero-title span {
-    display: inline-block;
+
+  .hero-title .invert {
     background: #000;
     color: #fff;
     padding: 2px 10px;
     border-radius: 6px;
+    display: inline-block;
   }
+
   .hero-desc {
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 15px;
+    line-height: 1.75;
     color: #333;
-    margin-bottom: 36px;
-    max-width: 440px;
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .btn-group {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .btn-primary {
-    font-family: 'Comic Sans MS', cursive;
-    background: #000;
-    color: #fff;
-    border: 2.5px solid #000;
-    padding: 14px 28px;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s, color 0.15s;
-  }
-  .btn-primary:hover { background: #fff; color: #000; }
-  .btn-secondary {
-    font-family: 'Comic Sans MS', cursive;
-    background: #fff;
-    color: #000;
-    border: 2.5px solid #000;
-    padding: 14px 28px;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s, color 0.15s;
-  }
-  .btn-secondary:hover { background: #000; color: #fff; }
 
-  /* PHONE MOCKUP */
-  .hero-right {
-    display: flex;
-    justify-content: center;
+  /* ANDROID BUTTON ONLY */
+  .download-btn {
+    display: inline-flex;
     align-items: center;
-    position: relative;
-  }
-  .phone-frame {
-    width: 220px;
-    height: 440px;
-    border: 4px solid #000;
-    border-radius: 36px;
-    background: #fff;
-    position: relative;
-    box-shadow: 10px 10px 0px #000;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .phone-notch {
-    width: 70px;
-    height: 22px;
-    background: #000;
-    border-radius: 0 0 16px 16px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-  }
-  .phone-screen {
-    padding: 10px 12px;
-    height: calc(100% - 22px);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .phone-topbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1.5px solid #000;
-    padding-bottom: 8px;
-  }
-  .phone-topbar-icon {
-    width: 24px;
-    height: 24px;
-    background: #000;
-    border-radius: 6px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .phone-topbar-title {
-    font-size: 11px;
-    font-weight: 700;
-    font-family: 'Comic Sans MS', cursive;
-  }
-  .map-area {
-    width: 100%;
-    height: 150px;
-    border: 2px solid #000;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    background: #f5f5f5;
-  }
-  .map-grid-line { position: absolute; background: #e0e0e0; }
-  .map-grid-h { width: 100%; height: 1px; left: 0; }
-  .map-grid-v { height: 100%; width: 1px; top: 0; }
-  .map-road-h {
-    position: absolute;
-    height: 4px;
-    background: #ccc;
-    border-radius: 2px;
-    left: 0; right: 0;
-  }
-  .map-road-v {
-    position: absolute;
-    width: 4px;
-    background: #ccc;
-    border-radius: 2px;
-    top: 0; bottom: 0;
-  }
-  .map-pin {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: #000;
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-    top: 50px;
-    left: 80px;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-  }
-  .pulse-ring {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border: 2px solid #000;
-    border-radius: 50%;
-    top: 43px;
-    left: 73px;
-    animation: pulse 1.8s infinite;
-    opacity: 0.4;
-  }
-  @keyframes pulse {
-    0% { transform: scale(0.8); opacity: 0.5; }
-    100% { transform: scale(1.4); opacity: 0; }
-  }
-  .ride-card {
-    border: 2px solid #000;
-    border-radius: 10px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Comic Sans MS', cursive;
-  }
-  .ride-card-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid #000;
-    flex-shrink: 0;
-  }
-  .ride-card-dot.active { background: #000; }
-  .ride-card-info { flex: 1; }
-  .ride-card-name { font-size: 10px; font-weight: 700; }
-  .ride-card-loc { font-size: 9px; color: #555; }
-  .ride-card-status {
-    font-size: 8px;
-    border: 1.5px solid #000;
-    border-radius: 20px;
-    padding: 2px 6px;
-  }
-  .phone-btn {
+    gap: 12px;
     background: #000;
     color: #fff;
-    border-radius: 8px;
-    padding: 8px;
+    text-decoration: none;
+    border: 2.5px solid #000;
+    border-radius: 14px;
+    padding: 16px 30px;
+    font-family: 'Comic Sans MS', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 5px 5px 0 #555;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .download-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 #555;
+  }
+
+  .download-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 #555;
+  }
+
+  .btn-text { display: flex; flex-direction: column; text-align: left; }
+  .btn-sub { font-size: 10px; opacity: 0.7; font-weight: 400; }
+  .btn-name { font-size: 16px; font-weight: 700; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 2.5px solid #000;
+    margin: 0;
+  }
+
+  /* STATS */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: #000;
+    color: #fff;
+  }
+
+  .stat {
+    flex: 1;
     text-align: center;
-    font-size: 10px;
-    font-family: 'Comic Sans MS', cursive;
-    margin-top: auto;
-  }
-  .deco-circle {
-    width: 140px;
-    height: 140px;
-    border: 3px solid #000;
-    border-radius: 50%;
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    z-index: -1;
-  }
-  .deco-square {
-    width: 70px;
-    height: 70px;
-    border: 3px solid #000;
-    position: absolute;
-    bottom: 20px;
-    left: -20px;
-    z-index: -1;
-    transform: rotate(15deg);
+    padding: 28px 20px;
+    border-right: 2px solid #333;
   }
 
-  /* STATS BAR */
-  .stats-bar {
-    background: #000;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    padding: 24px 40px;
-    flex-wrap: wrap;
-  }
-  .stat-item { text-align: center; }
-  .stat-num {
-    font-size: 28px;
-    font-weight: 700;
-    font-family: 'Comic Sans MS', cursive;
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
     display: block;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
   }
-  .stat-label {
-    font-size: 12px;
-    opacity: 0.7;
-    font-family: 'Comic Sans MS', cursive;
+
+  .stat-lbl {
+    font-size: 11px;
+    opacity: 0.6;
   }
 
   /* FEATURES */
   .features {
-    max-width: 1100px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 80px 40px;
+    padding: 70px 40px;
   }
+
   .section-label {
-    font-size: 12px;
-    font-family: 'Comic Sans MS', cursive;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
     border-left: 4px solid #000;
     padding-left: 10px;
-    margin-bottom: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    margin-bottom: 12px;
   }
+
   .section-title {
-    font-size: clamp(26px, 4vw, 38px);
+    font-size: clamp(22px, 4vw, 30px);
     font-weight: 700;
-    margin-bottom: 50px;
-    letter-spacing: -0.5px;
-    max-width: 500px;
-    line-height: 1.2;
+    margin-bottom: 40px;
+    line-height: 1.25;
   }
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-  }
-  .feature-card {
-    border: 2.5px solid #000;
-    border-radius: 16px;
-    padding: 28px 24px;
-    transition: transform 0.15s, box-shadow 0.15s;
-    background: #fff;
-    color: #000;
-  }
-  .feature-card:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 6px 6px 0 #000;
-  }
-  .feature-icon {
-    width: 44px;
-    height: 44px;
-    border: 2.5px solid #000;
-    border-radius: 12px;
+
+  .feat-list { display: flex; flex-direction: column; gap: 0; }
+
+  .feat-item {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 22px 0;
+    border-bottom: 2px solid #000;
   }
-  .feature-card.dark { background: #000; color: #fff; }
-  .feature-card.dark .feature-icon { border-color: #fff; }
-  .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-  .feature-desc { font-size: 13px; line-height: 1.6; opacity: 0.75; }
+
+  .feat-item:first-child { border-top: 2px solid #000; }
+
+  .feat-num {
+    font-size: 28px;
+    font-weight: 900;
+    opacity: 0.12;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 40px;
+  }
+
+  .feat-body {}
+  .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+  .feat-desc { font-size: 13px; line-height: 1.65; color: #444; }
 
   /* HOW IT WORKS */
   .how {
     background: #000;
     color: #fff;
-    padding: 80px 40px;
+    padding: 70px 40px;
   }
-  .how-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+
+  .how-inner { max-width: 700px; margin: 0 auto; }
   .how .section-label { border-left-color: #fff; }
   .how .section-title { color: #fff; }
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    margin-top: 50px;
-  }
-  .step { display: flex; flex-direction: column; gap: 12px; }
-  .step-num {
-    font-size: 48px;
-    font-weight: 900;
-    opacity: 0.2;
-    font-family: 'Comic Sans MS', cursive;
-    line-height: 1;
-  }
-  .step-title { font-size: 16px; font-weight: 700; color: #fff; }
-  .step-desc { font-size: 13px; line-height: 1.6; color: #aaa; }
-  .step-divider { width: 30px; height: 3px; background: #fff; }
 
-  /* DOWNLOAD CTA */
-  .download-cta {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 80px 40px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 40px;
-    align-items: center;
-    border-bottom: 2.5px solid #000;
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
+
+  .step-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 22px 0;
+    border-bottom: 1.5px solid #333;
   }
-  .cta-title {
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.5px;
-    max-width: 500px;
-  }
-  .cta-sub { font-size: 15px; color: #555; margin-top: 10px; }
-  .download-badges { display: flex; flex-direction: column; gap: 12px; }
-  .badge {
+
+  .step-item:first-child { border-top: 1.5px solid #333; }
+
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #fff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 12px;
-    border: 2.5px solid #000;
-    border-radius: 12px;
-    padding: 12px 20px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #000;
-    transition: background 0.15s, color 0.15s;
-    min-width: 180px;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
   }
-  .badge:hover { background: #000; color: #fff; }
-  .badge:hover .badge-icon path,
-  .badge:hover .badge-icon rect { fill: #fff; }
-  .badge-text { display: flex; flex-direction: column; }
-  .badge-sub { font-size: 10px; opacity: 0.6; font-family: 'Comic Sans MS', cursive; }
-  .badge-name { font-size: 14px; font-weight: 700; font-family: 'Comic Sans MS', cursive; }
+
+  .step-body {}
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; line-height: 1.65; color: #aaa; }
+
+  /* CTA */
+  .cta {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 70px 40px;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .cta-sub {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 36px;
+  }
 
   /* FOOTER */
   footer {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 30px 40px;
+    border-top: 2.5px solid #000;
+    padding: 22px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: #555;
+    color: #666;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
   }
 
-  @media (max-width: 700px) {
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .footer-logo img {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    border: 1.5px solid #000;
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
     nav { padding: 14px 20px; }
-    .nav-links { display: none; }
-    .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px; }
-    .hero-right { display: none; }
-    .stats-bar { gap: 30px; padding: 20px; }
+    .hero { padding: 60px 20px 60px; }
     .features { padding: 50px 20px; }
     .how { padding: 50px 20px; }
-    .download-cta { grid-template-columns: 1fr; padding: 50px 20px; }
-    .download-badges { flex-direction: row; flex-wrap: wrap; }
-    footer { padding: 20px; flex-direction: column; text-align: center; }
+    .cta { padding: 50px 20px; }
+    footer { padding: 18px 20px; flex-direction: column; text-align: center; }
+    .stats { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 2px solid #333; }
+    .stat:last-child { border-bottom: none; }
   }
 </style>
 </head>
@@ -486,155 +333,81 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <div class="nav-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white"/>
-        <circle cx="12" cy="9" r="2.5" fill="#000"/>
-        <path d="M19 3l2 2-2 2M5 3L3 5l2 2" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>
+    <img src="icon.png" alt="Where is Ride icon">
     Where is Ride
   </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#download">Download</a></li>
-  </ul>
+  <a href="#download" class="nav-link">Download</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="hero-tag">Real-time ride tracking</div>
-    <h1 class="hero-title">Know <span>exactly</span> where your ride is.</h1>
-    <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts — all in one clean app.</p>
-    <div class="btn-group">
-      <a href="#download" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-        </svg>
-        App Store
-      </a>
-      <a href="#download" class="btn-secondary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
-        </svg>
-        Google Play
-      </a>
-    </div>
-  </div>
+  <img src="icon.png" alt="Where is Ride" class="hero-icon">
+  <div class="hero-tag">Android App · Free · No Ads</div>
+  <h1 class="hero-title">Know <span class="invert">exactly</span><br>where your ride is.</h1>
+  <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts — all in one clean app.</p>
 
-  <div class="hero-right">
-    <div class="deco-circle"></div>
-    <div class="deco-square"></div>
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-screen">
-        <div class="phone-topbar">
-          <div class="phone-topbar-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="white"/>
-              <circle cx="12" cy="9" r="2.5" fill="#000"/>
-            </svg>
-          </div>
-          <span class="phone-topbar-title">Where is Ride</span>
-        </div>
-        <div class="map-area">
-          <div class="map-grid-h map-grid-line" style="top:33%"></div>
-          <div class="map-grid-h map-grid-line" style="top:66%"></div>
-          <div class="map-grid-v map-grid-line" style="left:33%"></div>
-          <div class="map-grid-v map-grid-line" style="left:66%"></div>
-          <div class="map-road-h" style="top:calc(33% - 2px)"></div>
-          <div class="map-road-h" style="top:calc(66% - 2px)"></div>
-          <div class="map-road-v" style="left:calc(33% - 2px)"></div>
-          <div class="map-road-v" style="left:calc(66% - 2px)"></div>
-          <div class="pulse-ring"></div>
-          <div class="map-pin"></div>
-        </div>
-        <div class="ride-card">
-          <div class="ride-card-dot active"></div>
-          <div class="ride-card-info">
-            <div class="ride-card-name">Bus 47 — Main Route</div>
-            <div class="ride-card-loc">Near Station Rd, 2 min away</div>
-          </div>
-          <div class="ride-card-status">Live</div>
-        </div>
-        <div class="ride-card">
-          <div class="ride-card-dot"></div>
-          <div class="ride-card-info">
-            <div class="ride-card-name">Auto #112</div>
-            <div class="ride-card-loc">Idle at Depot</div>
-          </div>
-          <div class="ride-card-status">Idle</div>
-        </div>
-        <div class="phone-btn">Track Ride</div>
-      </div>
+  <a href="#" class="download-btn" id="download">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+      <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
+    </svg>
+    <div class="btn-text">
+      <span class="btn-sub">Get it on</span>
+      <span class="btn-name">Google Play</span>
     </div>
-  </div>
+  </a>
 </section>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stat-item">
-    <span class="stat-num">Real-time</span>
-    <span class="stat-label">Live tracking</span>
+<hr class="divider">
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <span class="stat-val">Live</span>
+    <span class="stat-lbl">Real-time tracking</span>
   </div>
-  <div class="stat-item">
-    <span class="stat-num">Zero</span>
-    <span class="stat-label">Guesswork</span>
+  <div class="stat">
+    <span class="stat-val">Free</span>
+    <span class="stat-lbl">Always, no catch</span>
   </div>
-  <div class="stat-item">
-    <span class="stat-num">Free</span>
-    <span class="stat-label">Always</span>
+  <div class="stat">
+    <span class="stat-val">0 Ads</span>
+    <span class="stat-lbl">Clean experience</span>
   </div>
 </div>
 
 <!-- FEATURES -->
 <section class="features" id="features">
   <div class="section-label">What it does</div>
-  <h2 class="section-title">Everything you need to track any ride</h2>
-  <div class="features-grid">
-    <div class="feature-card dark">
-      <div class="feature-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.5" stroke-dasharray="2 3"/>
-        </svg>
+  <h2 class="section-title">Everything you need<br>to track any ride</h2>
+
+  <div class="feat-list">
+    <div class="feat-item">
+      <div class="feat-num">01</div>
+      <div class="feat-body">
+        <div class="feat-title">Live GPS tracking</div>
+        <div class="feat-desc">See your vehicle move on the map in real time, updated every few seconds. No refresh needed.</div>
       </div>
-      <div class="feature-title">Live GPS tracking</div>
-      <div class="feature-desc">See your vehicle move on the map in real time, updated every few seconds.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+    <div class="feat-item">
+      <div class="feat-num">02</div>
+      <div class="feat-body">
+        <div class="feat-title">Instant alerts</div>
+        <div class="feat-desc">Get notified when your ride is arriving, delayed, or has changed route. Never miss it again.</div>
       </div>
-      <div class="feature-title">Instant alerts</div>
-      <div class="feature-desc">Get notified when your ride is arriving, delayed, or has changed route.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="4" width="18" height="16" rx="3" stroke="#000" stroke-width="2"/>
-          <path d="M8 2v4M16 2v4M3 10h18" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+    <div class="feat-item">
+      <div class="feat-num">03</div>
+      <div class="feat-body">
+        <div class="feat-title">Trip history</div>
+        <div class="feat-desc">Review past journeys, routes taken, and timing logs at any time.</div>
       </div>
-      <div class="feature-title">Trip history</div>
-      <div class="feature-desc">Review past journeys, routes taken, and timing logs at any time.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="9" cy="7" r="4" stroke="#000" stroke-width="2"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+    <div class="feat-item">
+      <div class="feat-num">04</div>
+      <div class="feat-body">
+        <div class="feat-title">Share with others</div>
+        <div class="feat-desc">Share live ride status with friends or family with one tap — no account needed on their end.</div>
       </div>
-      <div class="feature-title">Share with others</div>
-      <div class="feature-desc">Share live ride status with friends or family with one tap, no account needed.</div>
     </div>
   </div>
 </section>
@@ -643,62 +416,56 @@
 <section class="how" id="how">
   <div class="how-inner">
     <div class="section-label">How it works</div>
-    <h2 class="section-title">Up and running in three steps</h2>
+    <h2 class="section-title">Up and running<br>in three steps</h2>
+
     <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-divider"></div>
-        <div class="step-title">Download the app</div>
-        <div class="step-desc">Available on Android. Free to install, no subscription required.</div>
+      <div class="step-item">
+        <div class="step-circle">1</div>
+        <div class="step-body">
+          <div class="step-title">Download the app</div>
+          <div class="step-desc">Free to install from Google Play. No subscription, no sign-up wall.</div>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-divider"></div>
-        <div class="step-title">Find your ride</div>
-        <div class="step-desc">Search by vehicle name, route number, or scan a QR code at the stop.</div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <div class="step-body">
+          <div class="step-title">Find your ride</div>
+          <div class="step-desc">Search by vehicle name, route number, or scan the QR code at the stop.</div>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-divider"></div>
-        <div class="step-title">Track in real time</div>
-        <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <div class="step-body">
+          <div class="step-title">Track in real time</div>
+          <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DOWNLOAD CTA -->
-<section class="download-cta" id="download">
-  <div>
-    <h2 class="cta-title">Stop waiting in the dark. Track your ride now.</h2>
-    <p class="cta-sub">Free download. No ads. No subscription.</p>
-  </div>
-  <div class="download-badges">
-    <a href="#" class="badge">
-      <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-      </svg>
-      <div class="badge-text">
-        <span class="badge-sub">Download on the</span>
-        <span class="badge-name">App Store</span>
-      </div>
-    </a>
-    <a href="#" class="badge">
-      <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
-      </svg>
-      <div class="badge-text">
-        <span class="badge-sub">Get it on</span>
-        <span class="badge-name">Google Play</span>
-      </div>
-    </a>
-  </div>
+<!-- CTA -->
+<section class="cta">
+  <h2 class="cta-title">Stop waiting in the dark.<br>Track your ride now.</h2>
+  <p class="cta-sub">Free download. No ads. No subscription. Android only.</p>
+  <a href="#" class="download-btn">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+      <path d="M3.18 23.87a2.5 2.5 0 0 0 2.46-.29l12.94-7.47-3.54-3.54L3.18 23.87zM20.52 10.27L17.6 8.57 13.77 12l3.82 3.82 2.94-1.7a2.5 2.5 0 0 0-.01-3.85zM1.36 1.17A2.5 2.5 0 0 0 1 2.5v19l11.65-11.65L1.36 1.17zM3.18.13L15.06 7.4l-3.41 3.41L3.18.13z"/>
+    </svg>
+    <div class="btn-text">
+      <span class="btn-sub">Get it on</span>
+      <span class="btn-name">Google Play</span>
+    </div>
+  </a>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <span>Where is Ride — built for real commuters</span>
-  <span>2025 — Free to use, always</span>
+  <div class="footer-logo">
+    <img src="icon.png" alt="icon">
+    Where is Ride
+  </div>
+  <span>© 2026 — Free to use, always</span>
 </footer>
 
 </body>
