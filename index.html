@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
-<title>Where is Ride</title>
+<title>Where is Ride — Real-time ride tracking for Android</title>
 <link rel="icon" type="image/png" href="icon.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,10 +18,22 @@
     font-display: swap;
   }
 
+  :root {
+    --ink: #111;
+    --ink-mid: #555;
+    --ink-muted: #999;
+    --paper: #fff;
+    --border: #e2e2e2;
+    --surface: #f8f8f6;
+    --font: 'SanzuFont', 'Comic Sans MS', 'Comic Sans', cursive;
+  }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    font-family: 'SanzuFont', 'Comic Sans MS', 'Comic Sans', cursive;
-    background: #fff;
-    color: #000;
+    font-family: var(--font);
+    background: var(--paper);
+    color: var(--ink);
     min-height: 100vh;
   }
 
@@ -30,328 +42,364 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 40px;
-    border-bottom: 2.5px solid #000;
+    padding: 0 48px;
+    height: 58px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(6px);
+    z-index: 100;
   }
 
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 17px;
+    gap: 9px;
+    font-size: 15px;
     font-weight: 700;
     text-decoration: none;
-    color: #000;
+    color: var(--ink);
   }
 
   .nav-logo img {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    border: 2px solid #000;
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
   }
 
-  .nav-link {
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+
+  .nav-text-link {
     font-size: 14px;
-    color: #000;
+    color: var(--ink-mid);
     text-decoration: none;
-    border: 2px solid #000;
-    padding: 6px 16px;
-    border-radius: 8px;
-    transition: background 0.15s, color 0.15s;
+    font-family: var(--font);
+    transition: color 0.15s;
   }
+  .nav-text-link:hover { color: var(--ink); }
 
-  .nav-link:hover { background: #000; color: #fff; }
+  .nav-btn {
+    font-size: 13px;
+    font-family: var(--font);
+    font-weight: 700;
+    color: var(--paper);
+    background: var(--ink);
+    text-decoration: none;
+    padding: 7px 18px;
+    border-radius: 7px;
+    transition: opacity 0.15s;
+  }
+  .nav-btn:hover { opacity: 0.8; }
 
   /* HERO */
   .hero {
-    max-width: 700px;
+    max-width: 620px;
     margin: 0 auto;
-    padding: 90px 40px 80px;
+    padding: 96px 40px 88px;
     text-align: center;
   }
 
   .hero-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
-    border: 3px solid #000;
+    width: 68px; height: 68px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
     margin: 0 auto 28px;
     display: block;
-    box-shadow: 5px 5px 0 #000;
   }
 
   .hero-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     font-size: 12px;
-    border: 2px solid #000;
-    padding: 4px 14px;
+    color: var(--ink-mid);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
     border-radius: 20px;
-    margin-bottom: 22px;
-    letter-spacing: 0.5px;
+    margin-bottom: 28px;
+    background: var(--surface);
   }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #16a34a;
+    animation: blink 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
   .hero-title {
-    font-size: clamp(32px, 6vw, 54px);
+    font-size: clamp(32px, 6vw, 50px);
     font-weight: 900;
     line-height: 1.1;
-    letter-spacing: -1px;
-    margin-bottom: 18px;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
   }
 
-  .hero-title .invert {
-    background: #000;
-    color: #fff;
-    padding: 2px 10px;
-    border-radius: 6px;
-    display: inline-block;
+  .hero-title em {
+    font-style: normal;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 2px;
   }
 
   .hero-desc {
     font-size: 15px;
-    line-height: 1.75;
-    color: #333;
+    line-height: 1.8;
+    color: var(--ink-mid);
     margin-bottom: 40px;
-    max-width: 480px;
+    max-width: 420px;
     margin-left: auto;
     margin-right: auto;
   }
 
   /* DOWNLOAD BUTTON */
   .download-btn {
-    display: inline-block;
-    background: #000;
-    color: #fff;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--ink);
+    color: var(--paper);
     text-decoration: none;
-    border: 2.5px solid #000;
-    border-radius: 14px;
-    padding: 16px 36px;
-    font-family: 'SanzuFont', 'Comic Sans MS', cursive;
-    font-size: 16px;
+    border-radius: 10px;
+    padding: 14px 26px;
+    font-family: var(--font);
+    font-size: 15px;
     font-weight: 700;
-    box-shadow: 5px 5px 0 #555;
-    transition: transform 0.1s, box-shadow 0.1s;
+    overflow: hidden;
+    transition: opacity 0.18s;
   }
 
-  .download-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0 #555;
+  .download-btn::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: rgba(255,255,255,0.08);
+    transition: width 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .download-btn:hover::after { width: 100%; }
+  .download-btn:hover { opacity: 0.88; }
+
+  .btn-icon {
+    width: 20px; height: 20px;
+    fill: #fff;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
-  .download-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0 #555;
+  .btn-content { position: relative; z-index: 1; text-align: left; }
+  .btn-main { display: block; }
+  .btn-sub  { display: block; font-size: 11px; font-weight: normal; opacity: 0.5; margin-top: 2px; }
+
+  /* TRUST ROW */
+  .trust-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  .trust-icon {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: var(--ink-mid);
+    flex-shrink: 0;
   }
 
   /* DIVIDER */
-  .divider {
-    border: none;
-    border-top: 2.5px solid #000;
-    margin: 0;
-  }
+  .divider { border: none; border-top: 1px solid var(--border); }
 
   /* STATS */
   .stats {
     display: flex;
-    justify-content: center;
-    gap: 0;
-    background: #000;
-    color: #fff;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
   }
 
   .stat {
     flex: 1;
     text-align: center;
-    padding: 28px 20px;
-    border-right: 2px solid #333;
+    padding: 28px 16px;
+    border-right: 1px solid var(--border);
   }
-
   .stat:last-child { border-right: none; }
 
   .stat-val {
     display: block;
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 19px;
+    font-weight: 900;
+    color: var(--ink);
     margin-bottom: 4px;
+    letter-spacing: -0.3px;
   }
+  .stat-lbl { font-size: 11px; color: var(--ink-muted); }
 
-  .stat-lbl {
-    font-size: 11px;
-    opacity: 0.6;
-  }
-
-  /* FEATURES */
-  .features {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 70px 40px;
-  }
-
+  /* SECTION COMMONS */
   .section-label {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    border-left: 4px solid #000;
-    padding-left: 10px;
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-size: clamp(22px, 4vw, 30px);
-    font-weight: 700;
-    margin-bottom: 40px;
-    line-height: 1.25;
-  }
-
-  .feat-list { display: flex; flex-direction: column; gap: 0; }
-
-  .feat-item {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    padding: 22px 0;
-    border-bottom: 2px solid #000;
-  }
-
-  .feat-item:first-child { border-top: 2px solid #000; }
-
-  .feat-num {
-    font-size: 28px;
-    font-weight: 900;
-    opacity: 0.12;
-    line-height: 1;
-    flex-shrink: 0;
-    width: 40px;
-  }
-
-  .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
-  .feat-desc { font-size: 13px; line-height: 1.65; color: #444; }
-
-  /* HOW IT WORKS */
-  .how {
-    background: #000;
-    color: #fff;
-    padding: 70px 40px;
-  }
-
-  .how-inner { max-width: 700px; margin: 0 auto; }
-  .how .section-label { border-left-color: #fff; }
-  .how .section-title { color: #fff; }
-
-  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
-
-  .step-item {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    padding: 22px 0;
-    border-bottom: 1.5px solid #333;
-  }
-
-  .step-item:first-child { border-top: 1.5px solid #333; }
-
-  .step-circle {
-    width: 36px;
-    height: 36px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .step-desc { font-size: 13px; line-height: 1.65; color: #aaa; }
-
-  /* CTA */
-  .cta {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 70px 40px;
-    text-align: center;
-  }
-
-  .cta-title {
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 700;
-    line-height: 1.2;
+    color: var(--ink-muted);
     margin-bottom: 10px;
   }
 
-  .cta-sub {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 36px;
+  .section-title {
+    font-size: clamp(22px, 3.5vw, 28px);
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: -0.4px;
+    margin-bottom: 40px;
   }
+
+  /* FEATURES */
+  .features {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 72px 40px;
+  }
+
+  .feat-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .feat-item:first-child { border-top: 1px solid var(--border); }
+
+  .feat-num { font-size: 12px; font-weight: 700; color: var(--ink-muted); padding-top: 2px; }
+  .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+  .feat-desc { font-size: 13px; line-height: 1.7; color: var(--ink-mid); }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 72px 40px;
+  }
+
+  .how-inner { max-width: 660px; margin: 0 auto; }
+  .how .section-label { color: rgba(255,255,255,0.38); }
+  .how .section-title { color: var(--paper); }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .step-item:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+
+  .step-num { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.3); padding-top: 2px; }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--paper); margin-bottom: 5px; }
+  .step-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.48); }
+
+  /* CTA */
+  .cta {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 900;
+    letter-spacing: -0.8px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .cta-sub { font-size: 14px; color: var(--ink-muted); margin-bottom: 36px; }
 
   /* FOOTER */
   footer {
-    border-top: 2.5px solid #000;
-    padding: 22px 40px;
+    border-top: 1px solid var(--border);
+    padding: 22px 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-    color: #666;
+    background: var(--surface);
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
   .footer-logo {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #000;
+    font-size: 14px;
     font-weight: 700;
-    font-size: 13px;
+    color: var(--ink);
+    text-decoration: none;
   }
 
   .footer-logo img {
-    width: 22px;
-    height: 22px;
+    width: 22px; height: 22px;
     border-radius: 5px;
-    border: 1.5px solid #000;
+    border: 1px solid var(--border);
   }
 
-  .footer-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
+  .footer-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 
   .github-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #000;
+    color: var(--ink-mid);
     text-decoration: none;
-    font-size: 12px;
-    border: 1.5px solid #000;
-    padding: 5px 12px;
-    border-radius: 8px;
-    transition: background 0.15s, color 0.15s;
+    font-size: 13px;
+    font-family: var(--font);
+    transition: color 0.15s;
   }
+  .github-link:hover { color: var(--ink); }
 
-  .github-link svg { flex-shrink: 0; transition: fill 0.15s; }
-  .github-link:hover { background: #000; color: #fff; }
-  .github-link:hover svg path { fill: #fff; }
+  .footer-copy { font-size: 12px; color: var(--ink-muted); }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* MOBILE */
   @media (max-width: 600px) {
-    nav { padding: 14px 20px; }
-    .hero { padding: 60px 20px 60px; }
-    .features { padding: 50px 20px; }
-    .how { padding: 50px 20px; }
-    .cta { padding: 50px 20px; }
-    footer { padding: 18px 20px; flex-direction: column; align-items: center; text-align: center; }
-    .footer-right { flex-direction: column; align-items: center; gap: 8px; }
-    .stats { flex-direction: column; }
-    .stat { border-right: none; border-bottom: 2px solid #333; }
-    .stat:last-child { border-bottom: none; }
+    nav { padding: 0 20px; }
+    .nav-text-link { display: none; }
+    .hero { padding: 60px 24px 56px; }
+    .features, .cta { padding: 52px 24px; }
+    .how { padding: 52px 24px; }
+    footer { padding: 20px 24px; flex-direction: column; align-items: flex-start; }
+    .footer-right { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .stats { flex-wrap: wrap; }
+    .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
+    .stat:nth-child(odd) { border-right: 1px solid var(--border); }
+    .trust-row { gap: 14px; }
   }
 </style>
 </head>
@@ -360,22 +408,46 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="icon.png" alt="Where is Ride icon">
+    <img src="icon.png" alt="Where is Ride">
     Where is Ride
   </a>
-  <a href="#download" class="nav-link">Download</a>
+  <div class="nav-right">
+    <a href="#features" class="nav-text-link">Features</a>
+    <a href="#how" class="nav-text-link">How it works</a>
+    <a href="#download" class="nav-btn">Download</a>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <img src="icon.png" alt="Where is Ride" class="hero-icon">
-  <div class="hero-tag">Android App · Free · No Ads</div>
-  <h1 class="hero-title">Know <span class="invert">exactly</span><br>where your ride is.</h1>
+
+  <div class="hero-tag">
+    <span class="live-dot"></span>
+    Android App &middot; Free &middot; No Ads
+  </div>
+
+  <h1 class="hero-title">Know <em>exactly</em><br>where your ride is.</h1>
+
   <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts — all in one clean app.</p>
 
-  <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk" download class="download-btn" id="download">
-    Download for Android
-  </a>
+  <div id="download">
+    <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk" download class="download-btn">
+      <svg class="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm1 13.414 3.293-3.293 1.414 1.414L12 19.243l-5.707-5.708 1.414-1.414L11 15.414V7h2v8.414Z"/>
+      </svg>
+      <span class="btn-content">
+        <span class="btn-main">Download for Android</span>
+        <span class="btn-sub">Free &middot; APK &middot; GitHub Releases</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="trust-row">
+    <span class="trust-item"><span class="trust-icon">✓</span> No sign-up required</span>
+    <span class="trust-item"><span class="trust-icon">✓</span> No ads, ever</span>
+    <span class="trust-item"><span class="trust-icon">✓</span> Open source</span>
+  </div>
 </section>
 
 <hr class="divider">
@@ -388,47 +460,49 @@
   </div>
   <div class="stat">
     <span class="stat-val">Free</span>
-    <span class="stat-lbl">Always</span>
+    <span class="stat-lbl">Always, no paywall</span>
   </div>
   <div class="stat">
     <span class="stat-val">0 Ads</span>
     <span class="stat-lbl">Clean experience</span>
   </div>
+  <div class="stat">
+    <span class="stat-val">1-tap</span>
+    <span class="stat-lbl">Share live ride</span>
+  </div>
 </div>
 
 <!-- FEATURES -->
 <section class="features" id="features">
-  <div class="section-label">What it does</div>
-  <h2 class="section-title">Everything you need<br>to track any ride</h2>
+  <p class="section-label reveal">What it does</p>
+  <h2 class="section-title reveal">Everything you need<br>to track any ride.</h2>
 
-  <div class="feat-list">
-    <div class="feat-item">
-      <div class="feat-num">01</div>
-      <div class="feat-body">
-        <div class="feat-title">Live GPS tracking</div>
-        <div class="feat-desc">See your vehicle move on the map in real time, updated every few seconds. No refresh needed.</div>
-      </div>
+  <div class="feat-item reveal">
+    <div class="feat-num">01</div>
+    <div>
+      <div class="feat-title">Live GPS tracking</div>
+      <div class="feat-desc">See your vehicle move on the map in real time, updated every few seconds. No refresh needed.</div>
     </div>
-    <div class="feat-item">
-      <div class="feat-num">02</div>
-      <div class="feat-body">
-        <div class="feat-title">Instant alerts</div>
-        <div class="feat-desc">Get notified when your ride is arriving, delayed, or has changed route. Never miss it again.</div>
-      </div>
+  </div>
+  <div class="feat-item reveal">
+    <div class="feat-num">02</div>
+    <div>
+      <div class="feat-title">Instant alerts</div>
+      <div class="feat-desc">Get notified when your ride is arriving, delayed, or has changed route. Never miss it again.</div>
     </div>
-    <div class="feat-item">
-      <div class="feat-num">03</div>
-      <div class="feat-body">
-        <div class="feat-title">Trip history</div>
-        <div class="feat-desc">Review past journeys, routes taken, and timing logs at any time.</div>
-      </div>
+  </div>
+  <div class="feat-item reveal">
+    <div class="feat-num">03</div>
+    <div>
+      <div class="feat-title">Trip history</div>
+      <div class="feat-desc">Review past journeys, routes taken, and timing logs at any time.</div>
     </div>
-    <div class="feat-item">
-      <div class="feat-num">04</div>
-      <div class="feat-body">
-        <div class="feat-title">Share with others</div>
-        <div class="feat-desc">Share live ride status with friends or family with one tap — no account needed on their end.</div>
-      </div>
+  </div>
+  <div class="feat-item reveal">
+    <div class="feat-num">04</div>
+    <div>
+      <div class="feat-title">Share with others</div>
+      <div class="feat-desc">Share live ride status with friends or family with one tap — no account needed on their end.</div>
     </div>
   </div>
 </section>
@@ -436,30 +510,28 @@
 <!-- HOW IT WORKS -->
 <section class="how" id="how">
   <div class="how-inner">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">Up and running<br>in three steps</h2>
+    <p class="section-label reveal">How it works</p>
+    <h2 class="section-title reveal">Up and running<br>in three steps.</h2>
 
-    <div class="steps">
-      <div class="step-item">
-        <div class="step-circle">1</div>
-        <div class="step-body">
-          <div class="step-title">Download the app</div>
-          <div class="step-desc">Free to install. No subscription, no sign-up wall.</div>
-        </div>
+    <div class="step-item reveal">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Download the app</div>
+        <div class="step-desc">Free to install. No subscription, no sign-up wall. Just download and open.</div>
       </div>
-      <div class="step-item">
-        <div class="step-circle">2</div>
-        <div class="step-body">
-          <div class="step-title">Find your ride</div>
-          <div class="step-desc">Search by vehicle name, route number, or scan the QR code at the stop.</div>
-        </div>
+    </div>
+    <div class="step-item reveal">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Find your ride</div>
+        <div class="step-desc">Search by vehicle name, route number, or scan the QR code at the stop.</div>
       </div>
-      <div class="step-item">
-        <div class="step-circle">3</div>
-        <div class="step-body">
-          <div class="step-title">Track in real time</div>
-          <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
-        </div>
+    </div>
+    <div class="step-item reveal">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Track in real time</div>
+        <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
       </div>
     </div>
   </div>
@@ -467,29 +539,48 @@
 
 <!-- CTA -->
 <section class="cta">
-  <h2 class="cta-title">Stop waiting in the dark.<br>Track your ride now.</h2>
-  <p class="cta-sub">Free download. No ads. No subscription. Android only.</p>
-  <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk" download class="download-btn">
-    Download for Android
-  </a>
+  <h2 class="cta-title reveal">Stop waiting in the dark.<br>Track your ride now.</h2>
+  <p class="cta-sub reveal">Free download. No ads. No subscription. Android only.</p>
+  <div class="reveal">
+    <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk" download class="download-btn">
+      <svg class="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm1 13.414 3.293-3.293 1.414 1.414L12 19.243l-5.707-5.708 1.414-1.414L11 15.414V7h2v8.414Z"/>
+      </svg>
+      <span class="btn-content">
+        <span class="btn-main">Download for Android</span>
+        <span class="btn-sub">Free &middot; APK &middot; GitHub Releases</span>
+      </span>
+    </a>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">
+  <a href="#" class="footer-logo">
     <img src="icon.png" alt="icon">
     Where is Ride
-  </div>
+  </a>
   <div class="footer-right">
     <a href="https://github.com/heysanzu" target="_blank" rel="noopener" class="github-link">
       <svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="#000"/>
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="#999"/>
       </svg>
       heysanzu
     </a>
-    <span>© 2026 — Free to use, always</span>
+    <span class="footer-copy">© 2026 — Free to use, always</span>
   </div>
 </footer>
 
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 50);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 </body>
 </html>
