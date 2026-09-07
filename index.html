@@ -12,7 +12,7 @@
 
   @font-face {
     font-family: 'SanzuFont';
-    src: url('https://raw.githubusercontent.com/heysanzu/sanzu/main/fonts/comic_sans_regular.ttf') format('truetype');
+    src: url('https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/fonts/comic_sans_regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -302,16 +302,47 @@
   }
 
   .feat-item {
-    display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 18px;
-    align-items: start;
-    padding: 22px 0;
-    border-bottom: 1px solid var(--border);
+    position: relative;
+    display: block;
+    padding: 22px 20px 22px 44px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: 0 6px 16px rgba(17,17,17,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .feat-item:first-child { border-top: 1px solid var(--border); }
 
-  .feat-num { font-size: 12px; font-weight: 700; color: var(--ink-muted); padding-top: 2px; }
+  .feat-item::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 27px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  .feat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(17,17,17,0.07);
+  }
+
+  .features {
+    max-width: 900px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .features > .section-label,
+  .features > .section-title {
+    grid-column: 1 / -1;
+  }
+
   .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
   .feat-desc { font-size: 13px; line-height: 1.7; color: var(--ink-mid); }
 
@@ -560,6 +591,7 @@
     .nav-text-link { display: none; }
     .hero { padding: 60px 24px 56px; }
     .features, .cta, .review-section, .how { padding: 52px 24px; }
+    .features { grid-template-columns: 1fr; }
     .steps-grid {
       grid-template-columns: 1fr;
       gap: 18px;
@@ -678,28 +710,24 @@
   <h2 class="section-title reveal">Everything you need<br>to track any ride.</h2>
 
   <div class="feat-item reveal">
-    <div class="feat-num">01</div>
     <div>
       <div class="feat-title">Live GPS tracking</div>
       <div class="feat-desc">See your vehicle move on the map in real time, updated every few seconds. No refresh needed.</div>
     </div>
   </div>
   <div class="feat-item reveal">
-    <div class="feat-num">02</div>
     <div>
       <div class="feat-title">Instant alerts</div>
       <div class="feat-desc">Get notified when your ride is arriving, delayed, or has changed route. Never miss it again.</div>
     </div>
   </div>
   <div class="feat-item reveal">
-    <div class="feat-num">03</div>
     <div>
       <div class="feat-title">Trip history</div>
       <div class="feat-desc">Review past journeys, routes taken, and timing logs at any time.</div>
     </div>
   </div>
   <div class="feat-item reveal">
-    <div class="feat-num">04</div>
     <div>
       <div class="feat-title">Share with others</div>
       <div class="feat-desc">Share live ride status with friends or family with one tap — no account needed on their end.</div>
