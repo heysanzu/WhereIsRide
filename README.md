@@ -1,22 +1,21 @@
 # Where is Ride
+Know exactly where your ride is.
+* Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts, all in one clean app.
+* A real-time vehicle tracking app for Android. See where your ride is before it arrives.
 
-<img src="icon.png" width="80" style="border-radius: 16px;" />
+[![Visit Website](https://img.shields.io/badge/Website-Visit-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://heysanzu.github.io/WhereIsRide/)
+[![Download App](https://img.shields.io/badge/Download-App-green?style=for-the-badge&logo=android&logoColor=white)](https://github.com/heysanzu/sanzuShielder/releases/download/WhereisRide_v1.0/WhereIsRide.apk)
 
-A real-time vehicle tracking app for Android. See where your ride is before it arrives.
+![Thumbnail](src/rideUI.png)
 
-## Download
+---  
 
-[Download APK](https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk)
+```bash
+git clone https://github.com/heysanzu/WhereIsRide.git
+cd WhereIsRide
+```
+<p align="left">
+  <img src="https://raw.githubusercontent.com/heysanzu/sanzu/main/sanzu.png" alt="Sanzu - Python notes & IDE for Android devices" width="80">
+</p>
 
-After downloading, tap the file to install. If blocked, go to **Settings → Allow from this source**.
-
-## Features
-
-- Live GPS tracking
-- Instant arrival alerts
-- Trip history
-- Share ride status with others
-
-## Credits
-
-Built by [@heysanzu](https://github.com/heysanzu)
+Maintained by [@heysanzu](https://github.com/heysanzu)
