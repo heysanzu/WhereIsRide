@@ -1,5 +1,5 @@
 # Where is Ride
-Know exactly where your ride is.
+**Know exactly where your ride is.**
 * Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts, all in one clean app.
 * A real-time vehicle tracking app for Android. See where your ride is before it arrives.
 
