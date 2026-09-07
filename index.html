@@ -316,28 +316,89 @@
   .feat-desc { font-size: 13px; line-height: 1.7; color: var(--ink-mid); }
 
   .how {
-    background: var(--ink);
-    color: var(--paper);
+    background: #f7f7f5;
+    color: var(--ink);
     padding: 72px 40px;
   }
 
-  .how-inner { max-width: 660px; margin: 0 auto; }
-  .how .section-label { color: rgba(255,255,255,0.38); }
-  .how .section-title { color: var(--paper); }
+  .how-inner { max-width: 900px; margin: 0 auto; }
+  .how .section-label { color: var(--ink-muted); }
+  .how .section-title { color: var(--ink); }
+
+  .steps-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 28px;
+    z-index: 1;
+  }
+
+  .steps-grid::before {
+    content: "";
+    position: absolute;
+    left: 72px;
+    right: 72px;
+    top: 39px;
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      #111 0,
+      #111 5px,
+      transparent 5px,
+      transparent 11px
+    );
+    background-size: 11px 2px;
+    animation: stepLineMove 0.8s linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes stepLineMove {
+    to { background-position: 11px 0; }
+  }
 
   .step-item {
-    display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 18px;
-    align-items: start;
-    padding: 22px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px 18px;
+    box-shadow: 0 8px 18px rgba(17,17,17,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .step-item:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
 
-  .step-num { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.3); padding-top: 2px; }
-  .step-title { font-size: 15px; font-weight: 700; color: var(--paper); margin-bottom: 5px; }
-  .step-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.48); }
+  .step-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 22px rgba(17,17,17,0.06);
+  }
+
+  .step-header {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .step-num {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 6px #f7f7f5;
+  }
+
+  .step-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .step-desc { font-size: 13px; line-height: 1.7; color: var(--ink-mid); }
 
   .review-section {
     max-width: 980px;
@@ -498,8 +559,28 @@
     nav { padding: 0 20px; }
     .nav-text-link { display: none; }
     .hero { padding: 60px 24px 56px; }
-    .features, .cta, .review-section { padding: 52px 24px; }
-    .how { padding: 52px 24px; }
+    .features, .cta, .review-section, .how { padding: 52px 24px; }
+    .steps-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .steps-grid::before {
+      left: 35px;
+      right: auto;
+      top: 39px;
+      bottom: 39px;
+      width: 2px;
+      height: auto;
+      background: repeating-linear-gradient(
+        180deg,
+        #111 0,
+        #111 5px,
+        transparent 5px,
+        transparent 11px
+      );
+      background-size: 2px 11px;
+      animation: stepLineMoveVertical 0.8s linear infinite;
+    }
     .review-card { flex-basis: 280px; }
     footer { padding: 20px 24px; flex-direction: column; align-items: flex-start; }
     .footer-right { flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -507,6 +588,10 @@
     .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
     .stat:nth-child(odd) { border-right: 1px solid var(--border); }
     .trust-row { gap: 14px; }
+  }
+
+  @keyframes stepLineMoveVertical {
+    to { background-position: 0 11px; }
   }
 </style>
 </head>
@@ -625,27 +710,31 @@
 <section class="how" id="how">
   <div class="how-inner">
     <p class="section-label reveal">How it works</p>
-    <h2 class="section-title reveal">Up and running<br>in three steps.</h2>
+    <h2 class="section-title reveal">Install in a few simple steps.</h2>
 
-    <div class="step-item reveal">
-      <div class="step-num">01</div>
-      <div>
-        <div class="step-title">Download the app</div>
-        <div class="step-desc">Free to install. No subscription, no sign-up wall. Just download and open.</div>
+    <div class="steps-grid">
+      <div class="step-item reveal">
+        <div class="step-header">
+          <div class="step-num">01</div>
+        </div>
+        <div class="step-title">Download APK</div>
+        <div class="step-desc">Tap the download button and save the Android app file to your device.</div>
       </div>
-    </div>
-    <div class="step-item reveal">
-      <div class="step-num">02</div>
-      <div>
-        <div class="step-title">Find your ride</div>
-        <div class="step-desc">Search by vehicle name, route number, or scan the QR code at the stop.</div>
+
+      <div class="step-item reveal">
+        <div class="step-header">
+          <div class="step-num">02</div>
+        </div>
+        <div class="step-title">Allow install</div>
+        <div class="step-desc">Open the downloaded file and allow installation from your device settings if prompted.</div>
       </div>
-    </div>
-    <div class="step-item reveal">
-      <div class="step-num">03</div>
-      <div>
-        <div class="step-title">Track in real time</div>
-        <div class="step-desc">Watch your vehicle move on the live map and get alerts before it arrives.</div>
+
+      <div class="step-item reveal">
+        <div class="step-header">
+          <div class="step-num">03</div>
+        </div>
+        <div class="step-title">Track your ride</div>
+        <div class="step-desc">Launch the app, choose your ride, and monitor live location updates in real time.</div>
       </div>
     </div>
   </div>
