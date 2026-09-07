@@ -6,13 +6,13 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <title>Where is Ride</title>
-<link rel="icon" type="image/png" href="icon.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/heysanzu/sanzu/main/sanzu.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   @font-face {
     font-family: 'SanzuFont';
-    src: url('font/comic_sans_regular.ttf') format('truetype');
+    src: url('https://raw.githubusercontent.com/heysanzu/sanzu/main/fonts/comic_sans_regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -37,7 +37,6 @@
     min-height: 100vh;
   }
 
-  /* NAV */
   nav {
     display: flex;
     align-items: center;
@@ -92,7 +91,6 @@
   }
   .nav-btn:hover { opacity: 0.8; }
 
-  /* HERO */
   .hero {
     max-width: 620px;
     margin: 0 auto;
@@ -154,7 +152,6 @@
     margin-right: auto;
   }
 
-  /* DOWNLOAD BUTTON */
   .download-btn {
     position: relative;
     display: inline-flex;
@@ -193,9 +190,7 @@
 
   .btn-content { position: relative; z-index: 1; text-align: left; }
   .btn-main { display: block; }
-  .btn-sub  { display: block; font-size: 11px; font-weight: normal; opacity: 0.5; margin-top: 2px; }
 
-  /* TRUST ROW */
   .trust-row {
     display: flex;
     align-items: center;
@@ -225,23 +220,43 @@
     flex-shrink: 0;
   }
 
-  /* DIVIDER */
   .divider { border: none; border-top: 1px solid var(--border); }
 
-  /* STATS */
   .stats {
-    display: flex;
+    overflow: hidden;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+  }
+
+  .stat-track {
+    display: flex;
+    width: max-content;
+    gap: 18px;
+    padding: 0 18px;
+    animation: statSlide 18s linear infinite;
   }
 
   .stat {
-    flex: 1;
+    width: 220px;
+    min-height: 110px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 28px 16px;
-    border-right: 1px solid var(--border);
+    padding: 18px 20px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .stat:last-child { border-right: none; }
+
+  .stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(17,17,17,0.05);
+  }
 
   .stat-val {
     display: block;
@@ -251,9 +266,19 @@
     margin-bottom: 4px;
     letter-spacing: -0.3px;
   }
-  .stat-lbl { font-size: 11px; color: var(--ink-muted); }
 
-  /* SECTION COMMONS */
+  .stat-lbl {
+    display: block;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-muted);
+  }
+
+  @keyframes statSlide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   .section-label {
     font-size: 11px;
     text-transform: uppercase;
@@ -270,7 +295,6 @@
     margin-bottom: 40px;
   }
 
-  /* FEATURES */
   .features {
     max-width: 660px;
     margin: 0 auto;
@@ -291,7 +315,6 @@
   .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
   .feat-desc { font-size: 13px; line-height: 1.7; color: var(--ink-mid); }
 
-  /* HOW IT WORKS */
   .how {
     background: var(--ink);
     color: var(--paper);
@@ -316,7 +339,93 @@
   .step-title { font-size: 15px; font-weight: 700; color: var(--paper); margin-bottom: 5px; }
   .step-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.48); }
 
-  /* CTA */
+  .review-section {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 72px 40px 10px;
+  }
+
+  .review-marquee {
+    overflow: hidden;
+    margin-top: 24px;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  .review-track {
+    display: flex;
+    width: max-content;
+    gap: 20px;
+    animation: scrollReviews 30s linear infinite;
+  }
+
+  .review-card {
+    flex: 0 0 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px 20px;
+    min-height: 170px;
+  }
+
+  .review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .customer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .customer strong {
+    display: block;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .customer span {
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  .review-stars {
+    color: #f59e0b;
+    letter-spacing: 1px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .review-card p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin: 0;
+  }
+
+  @keyframes scrollReviews {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
   .cta {
     max-width: 620px;
     margin: 0 auto;
@@ -335,7 +444,6 @@
 
   .cta-sub { font-size: 14px; color: var(--ink-muted); margin-bottom: 36px; }
 
-  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 22px 48px;
@@ -379,7 +487,6 @@
 
   .footer-copy { font-size: 12px; color: var(--ink-muted); }
 
-  /* REVEAL */
   .reveal {
     opacity: 0;
     transform: translateY(14px);
@@ -387,13 +494,13 @@
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* MOBILE */
   @media (max-width: 600px) {
     nav { padding: 0 20px; }
     .nav-text-link { display: none; }
     .hero { padding: 60px 24px 56px; }
-    .features, .cta { padding: 52px 24px; }
+    .features, .cta, .review-section { padding: 52px 24px; }
     .how { padding: 52px 24px; }
+    .review-card { flex-basis: 280px; }
     footer { padding: 20px 24px; flex-direction: column; align-items: flex-start; }
     .footer-right { flex-direction: column; align-items: flex-start; gap: 8px; }
     .stats { flex-wrap: wrap; }
@@ -405,10 +512,9 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="icon.png" alt="Where is Ride">
+    <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="Where is Ride">
     Where is Ride
   </a>
   <div class="nav-right">
@@ -418,18 +524,12 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <img src="icon.png" alt="Where is Ride" class="hero-icon">
-
-  <div class="hero-tag">
-    <span class="live-dot"></span>
-    Android App &middot; Free &middot; No Ads
-  </div>
+  <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="Where is Ride" class="hero-icon">
 
   <h1 class="hero-title">Know exactly<br>where your ride is.</h1>
 
-  <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts — all in one clean app.</p>
+  <p class="hero-desc">Stop guessing when your vehicle will arrive. Where is Ride gives you live location, real-time status, and instant alerts, all in one clean app.</p>
 
   <div id="download">
     <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide/WhereIsRide.apk" download class="download-btn">
@@ -437,42 +537,57 @@
         <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm1 13.414 3.293-3.293 1.414 1.414L12 19.243l-5.707-5.708 1.414-1.414L11 15.414V7h2v8.414Z"/>
       </svg>
       <span class="btn-content">
-        <span class="btn-main">Download for Android</span>
-        <span class="btn-sub">Free &middot; APK &middot; GitHub Releases</span>
+        <span class="btn-main">Download</span>
       </span>
     </a>
   </div>
 
   <div class="trust-row">
     <span class="trust-item"><span class="trust-icon">✓</span> No sign-up required</span>
-    <span class="trust-item"><span class="trust-icon">✓</span> No ads, ever</span>
+    <span class="trust-item"><span class="trust-icon">✓</span> No ads</span>
     <span class="trust-item"><span class="trust-icon">✓</span> Free to use</span>
   </div>
 </section>
 
 <hr class="divider">
 
-<!-- STATS -->
 <div class="stats">
-  <div class="stat">
-    <span class="stat-val">Live</span>
-    <span class="stat-lbl">Real-time tracking</span>
-  </div>
-  <div class="stat">
-    <span class="stat-val">Free</span>
-    <span class="stat-lbl">Always, no paywall</span>
-  </div>
-  <div class="stat">
-    <span class="stat-val">0 Ads</span>
-    <span class="stat-lbl">Clean experience</span>
-  </div>
-  <div class="stat">
-    <span class="stat-val">1-tap</span>
-    <span class="stat-lbl">Share live ride</span>
+  <div class="stat-track">
+    <div class="stat">
+      <span class="stat-val">Live</span>
+      <span class="stat-lbl">Real-time tracking</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">Free</span>
+      <span class="stat-lbl">Always, no paywall</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">0 Ads</span>
+      <span class="stat-lbl">Clean experience</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">1-tap</span>
+      <span class="stat-lbl">Share live ride</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">Live</span>
+      <span class="stat-lbl">Real-time tracking</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">Free</span>
+      <span class="stat-lbl">Always, no paywall</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">0 Ads</span>
+      <span class="stat-lbl">Clean experience</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">1-tap</span>
+      <span class="stat-lbl">Share live ride</span>
+    </div>
   </div>
 </div>
 
-<!-- FEATURES -->
 <section class="features" id="features">
   <p class="section-label reveal">What it does</p>
   <h2 class="section-title reveal">Everything you need<br>to track any ride.</h2>
@@ -507,7 +622,6 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
 <section class="how" id="how">
   <div class="how-inner">
     <p class="section-label reveal">How it works</p>
@@ -537,7 +651,169 @@
   </div>
 </section>
 
-<!-- CTA -->
+<section class="review-section">
+  <p class="section-label reveal">Reviews</p>
+  <h2 class="section-title reveal">People from across India.</h2>
+
+  <div class="review-marquee reveal">
+    <div class="review-track">
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Sanzu</strong>
+              <span>Dhanbad, Jharkhand</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“This app made my daily commute easy. I can see exactly where my bus is before leaving home, and it saves me from waiting in the heat.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Sneha Verma</strong>
+              <span>Jaipur, Rajasthan</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“Very simple and helpful. I shared the live trip with my family and they knew exactly when I would reach home. Super useful.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">R</div>
+            <div>
+              <strong>Rohit Yadav</strong>
+              <span>Lucknow, Uttar Pradesh</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“Clean interface, fast updates, and no clutter. It works smoothly and gives accurate location updates for my ride.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">M</div>
+            <div>
+              <strong>Meera Nair</strong>
+              <span>Bengaluru, Karnataka</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“I use it every evening to track my cab. The location updates are quick and the design is easy for everyone in the family to understand.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">V</div>
+            <div>
+              <strong>Vikas Singh</strong>
+              <span>Patna, Bihar</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“It helped me avoid waiting at the wrong stop. The app is very clear and the live updates feel accurate and reliable.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">A</div>
+            <div>
+              <strong>Ananya Das</strong>
+              <span>Kolkata, West Bengal</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“Simple, fast, and very useful during rainy days. I always know whether my ride is near or delayed before stepping out.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Sanzu</strong>
+              <span>Dhanbad, Jharkhand</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“This app made my daily commute easy. I can see exactly where my bus is before leaving home, and it saves me from waiting in the heat.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">S</div>
+            <div>
+              <strong>Sneha Verma</strong>
+              <span>Jaipur, Rajasthan</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“Very simple and helpful. I shared the live trip with my family and they knew exactly when I would reach home. Super useful.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">R</div>
+            <div>
+              <strong>Rohit Yadav</strong>
+              <span>Lucknow, Uttar Pradesh</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“Clean interface, fast updates, and no clutter. It works smoothly and gives accurate location updates for my ride.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">M</div>
+            <div>
+              <strong>Meera Nair</strong>
+              <span>Bengaluru, Karnataka</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“I use it every evening to track my cab. The location updates are quick and the design is easy for everyone in the family to understand.”</p>
+      </article>
+
+      <article class="review-card">
+        <div class="review-header">
+          <div class="customer">
+            <div class="avatar">V</div>
+            <div>
+              <strong>Vikas Singh</strong>
+              <span>Patna, Bihar</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <p>“It helped me avoid waiting at the wrong stop. The app is very clear and the live updates feel accurate and reliable.”</p>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section class="cta">
   <h2 class="cta-title reveal">Stop waiting in the dark.<br>Track your ride now.</h2>
   <p class="cta-sub reveal">Free download. No ads. No subscription. Android only.</p>
@@ -547,17 +823,15 @@
         <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm1 13.414 3.293-3.293 1.414 1.414L12 19.243l-5.707-5.708 1.414-1.414L11 15.414V7h2v8.414Z"/>
       </svg>
       <span class="btn-content">
-        <span class="btn-main">Download for Android</span>
-        <span class="btn-sub">Free &middot; APK &middot; GitHub Releases</span>
+        <span class="btn-main">Download</span>
       </span>
     </a>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <a href="#" class="footer-logo">
-    <img src="icon.png" alt="icon">
+    <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="icon">
     Where is Ride
   </a>
   <div class="footer-right">
@@ -567,7 +841,7 @@
       </svg>
       heysanzu
     </a>
-    <span class="footer-copy">© 2026 — Free to use, always</span>
+    <span class="footer-copy">© 2026 Where is Ride</span>
   </div>
 </footer>
 
