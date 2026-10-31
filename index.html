@@ -125,6 +125,32 @@
   .block h2 { font-size: clamp(22px, 3.5vw, 28px); font-weight: 900; letter-spacing: -.4px; line-height: 1.25; margin-bottom: 8px; }
   .block .sub { font-size: 14px; color: var(--ink-mid); margin-bottom: 36px; max-width: 460px; }
 
+  /* Screenshots (auto-scroll) */
+  .shots-block { padding: 72px 0 64px; overflow: hidden; }
+  .shots-block .sub { margin-bottom: 32px; }
+  .shots {
+    display: flex; gap: 20px;
+    overflow-x: auto; overflow-y: hidden;
+    padding: 6px 32px 22px;
+    scrollbar-width: none; -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+    cursor: grab;
+  }
+  .shots::-webkit-scrollbar { display: none; }
+  .shots.dragging { cursor: grabbing; user-select: none; }
+  .shot {
+    flex: 0 0 auto; width: 210px; aspect-ratio: 9 / 19;
+    padding: 8px; border: 1px solid var(--border); border-radius: 32px;
+    background: var(--paper); box-shadow: 0 14px 32px rgba(17,17,17,.07);
+  }
+  .shot img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    border-radius: 25px; background: var(--surface); border: 1px solid var(--border);
+    -webkit-user-drag: none; user-select: none;
+  }
+
   .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 22px 22px 20px; }
   .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
@@ -184,6 +210,10 @@
     .lead { margin-left: auto; margin-right: auto; }
     .cta-row, .trust, .vehicles { justify-content: center; }
     .block { padding: 52px 0; }
+    .shots-block { padding: 52px 0 48px; }
+    .shots { padding-left: 22px; padding-right: 22px; gap: 14px; }
+    .shot { width: 170px; border-radius: 28px; }
+    .shot img { border-radius: 21px; }
     .grid-2, .steps { grid-template-columns: 1fr; }
     .info { grid-template-columns: repeat(2, 1fr); }
     .info div:nth-child(2) { border-right: none; }
@@ -206,10 +236,11 @@
       Where is Ride
     </a>
     <div class="nav-right">
+      <a href="#screenshots" class="nav-link">Screenshots</a>
       <a href="#features" class="nav-link">Features</a>
       <a href="#install" class="nav-link">Install</a>
       <a href="#faq" class="nav-link">FAQ</a>
-      <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide_v1.0/WhereIsRide.apk" download class="btn btn-sm">Download</a>
+      <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide_v1.0/WhereIsRide.apk" download class="btn btn-sm">Update</a>
     </div>
   </div>
 </nav>
@@ -256,7 +287,21 @@
   </div>
 </header>
 
-<section class="block" id="features">
+<section class="block shots-block" id="screenshots">
+  <div class="wrap">
+    <h2>See the app.</h2>
+    <p class="sub">A quick look at how Where is Ride works on your phone.</p>
+  </div>
+  <div class="shots" id="shots" role="region" aria-label="App screenshots" tabindex="0">
+    <figure class="shot"><img src="s1.png" alt="Where is Ride app screenshot 1" loading="eager" draggable="false"></figure>
+    <figure class="shot"><img src="s2.png" alt="Where is Ride app screenshot 2" loading="eager" draggable="false"></figure>
+    <figure class="shot"><img src="s3.png" alt="Where is Ride app screenshot 3" loading="eager" draggable="false"></figure>
+    <figure class="shot"><img src="s4.png" alt="Where is Ride app screenshot 4" loading="eager" draggable="false"></figure>
+    <figure class="shot"><img src="s5.png" alt="Where is Ride app screenshot 5" loading="eager" draggable="false"></figure>
+  </div>
+</section>
+
+<section class="block alt" id="features">
   <div class="wrap">
     <h2>Everything you need to track a ride.</h2>
     <p class="sub">Quick, simple tracking for every kind of local vehicle.</p>
@@ -269,7 +314,7 @@
   </div>
 </section>
 
-<section class="block alt" id="install">
+<section class="block" id="install">
   <div class="wrap">
     <h2>Install in three steps.</h2>
     <p class="sub">Where is Ride is installed directly from an APK file.</p>
@@ -281,7 +326,7 @@
   </div>
 </section>
 
-<section class="block">
+<section class="block alt">
   <div class="wrap">
     <h2>App details</h2>
     <p class="sub">What you're getting.</p>
@@ -294,7 +339,7 @@
   </div>
 </section>
 
-<section class="block alt" id="faq">
+<section class="block" id="faq">
   <div class="wrap">
     <h2>Questions</h2>
     <p class="sub">Quick answers before you install.</p>
@@ -348,6 +393,88 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function () {
+  var el = document.getElementById('shots');
+  if (!el) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Duplicate the set once so the loop is seamless
+  var originals = Array.prototype.slice.call(el.children);
+  originals.forEach(function (n) {
+    var c = n.cloneNode(true);
+    c.setAttribute('aria-hidden', 'true');
+    el.appendChild(c);
+  });
+
+  var SPEED = 40;            // px per second
+  var pos = 0, last = null, paused = false, resumeTimer = null, dragging = false;
+  var startX = 0, startLeft = 0;
+
+  function loopWidth() {
+    return el.children[originals.length].offsetLeft - el.children[0].offsetLeft;
+  }
+  function pause() { paused = true; clearTimeout(resumeTimer); }
+  function resumeLater(ms) {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(function () { pos = el.scrollLeft; paused = false; }, ms);
+  }
+
+  function tick(t) {
+    if (last === null) last = t;
+    var dt = Math.min((t - last) / 1000, 0.05);
+    last = t;
+    var lw = loopWidth();
+    if (!paused && !dragging && lw > 0) {
+      pos += SPEED * dt;
+      if (pos >= lw) pos -= lw;
+      el.scrollLeft = pos;
+    } else if (lw > 0) {
+      pos = el.scrollLeft;
+      if (pos >= lw) { pos -= lw; el.scrollLeft = pos; }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Hover / focus (mouse + keyboard)
+  el.addEventListener('mouseenter', pause);
+  el.addEventListener('mouseleave', function () { if (!dragging) resumeLater(300); });
+  el.addEventListener('focus', pause);
+  el.addEventListener('blur', function () { resumeLater(300); });
+
+  // Touch: pause while swiping, resume after a moment
+  el.addEventListener('touchstart', pause, { passive: true });
+  el.addEventListener('touchend', function () { resumeLater(2000); }, { passive: true });
+  el.addEventListener('wheel', function () { pause(); resumeLater(2000); }, { passive: true });
+
+  // Mouse drag
+  el.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse') return;
+    dragging = true; pause();
+    startX = e.clientX; startLeft = el.scrollLeft;
+    el.classList.add('dragging');
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    el.scrollLeft = startLeft - (e.clientX - startX);
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    resumeLater(1500);
+  }
+  el.addEventListener('pointerup', endDrag);
+  el.addEventListener('pointercancel', endDrag);
+
+  // Don't burn cycles when the tab is hidden
+  document.addEventListener('visibilitychange', function () { last = null; });
+
+  requestAnimationFrame(tick);
+})();
+</script>
 
 </body>
 </html>
