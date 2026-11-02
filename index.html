@@ -88,7 +88,13 @@
   .lead { font-size: 16px; line-height: 1.8; color: var(--ink-mid); max-width: 440px; margin-bottom: 32px; }
 
   .vehicles { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: -8px 0 28px; }
-  .vehicles li { font-size: 12px; color: var(--ink-mid); border: 1px solid var(--border); background: var(--surface); padding: 5px 14px; border-radius: 20px; }
+  .vehicles li {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ink-mid);
+    border: 1px solid var(--border); background: var(--surface);
+    padding: 5px 14px 5px 8px; border-radius: 20px;
+  }
+  .vehicles li img { width: 20px; height: 20px; object-fit: contain; flex: 0 0 auto; display: block; }
 
   .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
   .cta-meta { font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
@@ -229,6 +235,9 @@
 </head>
 <body>
 
+<!-- Background music (looping, no controls) -->
+<audio id="bgm" src="src/bgm/ride_bg.mp3" loop preload="auto" playsinline></audio>
+
 <nav>
   <div class="wrap">
     <a href="#" class="brand">
@@ -252,7 +261,13 @@
       <h1>Know exactly<br>where your ride is.</h1>
       <p class="lead">Find and track local cars, EV cars, rickshaws, EV rickshaws and bikes live. Spend less time waiting and pay only the normal daily local fare.</p>
 
-      <ul class="vehicles" aria-label="Supported vehicles"><li>Car</li><li>EV car</li><li>Rickshaw</li><li>EV rickshaw</li><li>Bike</li></ul>
+      <ul class="vehicles" aria-label="Supported vehicles">
+        <li><img src="src/img/car.png" alt="" width="20" height="20">Car</li>
+        <li><img src="src/img/ev_car.png" alt="" width="20" height="20">EV car</li>
+        <li><img src="src/img/rickshaw.png" alt="" width="20" height="20">Rickshaw</li>
+        <li><img src="src/img/ev_rickshaw.png" alt="" width="20" height="20">EV rickshaw</li>
+        <li><img src="src/img/bike.png" alt="" width="20" height="20">Bike</li>
+      </ul>
 
       <div class="cta-row">
         <a href="https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide_v1.0/WhereIsRide.apk" download class="btn">
@@ -473,6 +488,39 @@
   document.addEventListener('visibilitychange', function () { last = null; });
 
   requestAnimationFrame(tick);
+})();
+
+// Background music: loops, no mute button.
+// Browsers block autoplay with sound, so try immediately and
+// fall back to starting on the visitor's first interaction.
+(function () {
+  var bgm = document.getElementById('bgm');
+  if (!bgm) return;
+  bgm.loop = true;
+  bgm.volume = 0.4;
+
+  var started = false;
+  var events = ['pointerdown', 'touchend', 'click', 'keydown'];
+
+  function removeListeners() {
+    events.forEach(function (ev) { document.removeEventListener(ev, startOnInteraction, true); });
+  }
+  function tryPlay() {
+    var p = bgm.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function () { started = true; removeListeners(); }).catch(function () {});
+    }
+  }
+  function startOnInteraction() { if (!started) tryPlay(); }
+
+  events.forEach(function (ev) { document.addEventListener(ev, startOnInteraction, true); });
+  tryPlay();
+
+  // Pause when the tab is hidden, resume when visible again
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { bgm.pause(); }
+    else if (started) { bgm.play().catch(function () {}); }
+  });
 })();
 </script>
 
