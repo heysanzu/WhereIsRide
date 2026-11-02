@@ -3,14 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where is Ride – Live Vehicle Tracking App for Android</title>
 <meta name="description" content="Where is Ride is a free Android app to find and track local cars, EVs, rickshaws and bikes live. Pay only the normal local fare. No ads, no sign-up.">
+<link rel="canonical" href="https://whereisride.muxbite.com/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="MUXBITE">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png">
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Where is Ride">
+<meta property="og:locale" content="en_IN">
+<meta property="og:url" content="https://whereisride.muxbite.com/">
 <meta property="og:title" content="Where is Ride – Live vehicle tracking for Android">
 <meta property="og:description" content="Track local cars, EV cars, rickshaws, EV rickshaws and bikes live. Free app, local fare only.">
 <meta property="og:image" content="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-<title>Where is Ride – Download for Android</title>
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png">
+<meta property="og:image:alt" content="Where is Ride app icon">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Where is Ride – Live vehicle tracking for Android">
+<meta name="twitter:description" content="Track local cars, EV cars, rickshaws, EV rickshaws and bikes live. Free app, local fare only.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://muxbite.com/#org",
+      "name": "MUXBITE",
+      "url": "https://muxbite.com/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://whereisride.muxbite.com/#website",
+      "url": "https://whereisride.muxbite.com/",
+      "name": "Where is Ride",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://muxbite.com/#org" }
+    },
+    {
+      "@type": "MobileApplication",
+      "@id": "https://whereisride.muxbite.com/#app",
+      "name": "Where is Ride",
+      "description": "Free Android app to find and track local cars, EV cars, rickshaws, EV rickshaws and bikes live.",
+      "operatingSystem": "ANDROID",
+      "applicationCategory": "TravelApplication",
+      "softwareVersion": "1.0",
+      "url": "https://whereisride.muxbite.com/",
+      "image": "https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png",
+      "downloadUrl": "https://github.com/heysanzu/WhereIsRide/releases/download/WhereIsRide_v1.0/WhereIsRide.apk",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+      "publisher": { "@id": "https://muxbite.com/#org" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need to create an account?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Open the app and start tracking. There is no sign-up." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do I have to allow installation from outside the Play Store?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The app is distributed as a direct APK download, so Android asks you to confirm the install. You can turn the permission off again once the app is installed." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I pay anything extra to use it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The app is free, with no ads, no subscription and no booking fee. You pay only the normal daily local fare for your ride." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there an iPhone version?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not at the moment. Where is Ride is available for Android only." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I get updates?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Download the latest APK from this page and install it over the existing app." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -235,13 +321,13 @@
 </head>
 <body>
 
-<!-- Background music (looping, no controls) -->
-<audio id="bgm" src="src/bgm/ride_bg.mp3" loop preload="auto" playsinline></audio>
+<!-- Background music (looping, no controls). preload=none keeps it from slowing page load. -->
+<audio id="bgm" src="src/bgm/ride_bg.mp3" loop preload="none" playsinline></audio>
 
-<nav>
+<nav aria-label="Main">
   <div class="wrap">
     <a href="#" class="brand">
-      <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="">
+      <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="" width="28" height="28">
       Where is Ride
     </a>
     <div class="nav-right">
@@ -302,17 +388,19 @@
   </div>
 </header>
 
+<main>
+
 <section class="block shots-block" id="screenshots">
   <div class="wrap">
     <h2>See the app.</h2>
     <p class="sub">A quick look at how Where is Ride works on your phone.</p>
   </div>
   <div class="shots" id="shots" role="region" aria-label="App screenshots" tabindex="0">
-    <figure class="shot"><img src="src/s1.jpeg" alt="Where is Ride app screenshot 1" loading="eager" draggable="false"></figure>
-    <figure class="shot"><img src="src/s2.jpeg" alt="Where is Ride app screenshot 2" loading="eager" draggable="false"></figure>
-    <figure class="shot"><img src="src/s3.jpeg" alt="Where is Ride app screenshot 3" loading="eager" draggable="false"></figure>
-    <figure class="shot"><img src="src/s4.jpeg" alt="Where is Ride app screenshot 4" loading="eager" draggable="false"></figure>
-    <figure class="shot"><img src="src/s5.jpeg" alt="Where is Ride app screenshot 5" loading="eager" draggable="false"></figure>
+    <figure class="shot"><img src="src/s1.jpeg" alt="Where is Ride live vehicle tracking app screenshot 1" width="194" height="395" loading="lazy" decoding="async" draggable="false"></figure>
+    <figure class="shot"><img src="src/s2.jpeg" alt="Where is Ride live vehicle tracking app screenshot 2" width="194" height="395" loading="lazy" decoding="async" draggable="false"></figure>
+    <figure class="shot"><img src="src/s3.jpeg" alt="Where is Ride live vehicle tracking app screenshot 3" width="194" height="395" loading="lazy" decoding="async" draggable="false"></figure>
+    <figure class="shot"><img src="src/s4.jpeg" alt="Where is Ride live vehicle tracking app screenshot 4" width="194" height="395" loading="lazy" decoding="async" draggable="false"></figure>
+    <figure class="shot"><img src="src/s5.jpeg" alt="Where is Ride live vehicle tracking app screenshot 5" width="194" height="395" loading="lazy" decoding="async" draggable="false"></figure>
   </div>
 </section>
 
@@ -393,10 +481,12 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap">
     <a href="#" class="brand">
-      <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="" style="width:22px;height:22px;border-radius:5px">
+      <img src="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" alt="" width="22" height="22" style="width:22px;height:22px;border-radius:5px">
       Where is Ride
     </a>
     <div class="footer-right">
