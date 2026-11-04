@@ -201,7 +201,7 @@
   }
   .screen svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .route { stroke-dasharray: 6 7; animation: dash 1.2s linear infinite; }
-  @keyframes dash { to { stroke-dashoffset: 13; } }
+  @keyframes dash { to { stroke-dashoffset: -13; } }
   .eta {
     position: absolute; left: 12px; right: 12px; bottom: 12px;
     background: var(--paper); border: 1px solid var(--border); border-radius: 14px;
@@ -373,12 +373,12 @@
       <div class="screen">
         <svg viewBox="0 0 230 440" preserveAspectRatio="xMidYMid slice">
           <path d="M-10 90 L240 60 M-10 200 L240 170 M-10 310 L240 280 M60 -10 L90 450 M150 -10 L170 450" stroke="#e2e2e2" stroke-width="10" fill="none"/>
-          <path class="route" d="M50 335 C 50 265, 160 275, 140 195 S 110 115, 170 75" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <circle cx="50" cy="335" r="19" fill="#fff" stroke="#111" stroke-width="2.5"/>
-          <image href="src/img/rickshaw.png" x="36" y="321" width="28" height="28" preserveAspectRatio="xMidYMid meet"/>
-          <defs><clipPath id="ic"><circle cx="170" cy="56" r="16"/></clipPath></defs>
-          <circle cx="170" cy="56" r="19" fill="#fff" stroke="#e2e2e2"/>
-          <image href="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" x="154" y="40" width="32" height="32" clip-path="url(#ic)" preserveAspectRatio="xMidYMid slice"/>
+          <path class="route" d="M82.5 335 L80.2 299.2 L163 289.2 L152.9 56" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="butt" stroke-linejoin="miter"/>
+          <circle cx="82.5" cy="335" r="19" fill="#fff" stroke="#111" stroke-width="2.5"/>
+          <image href="src/img/rickshaw.png" x="68.5" y="321" width="28" height="28" preserveAspectRatio="xMidYMid meet"/>
+          <defs><clipPath id="ic"><circle cx="152.9" cy="56" r="16"/></clipPath></defs>
+          <circle cx="152.9" cy="56" r="19" fill="#fff" stroke="#e2e2e2"/>
+          <image href="https://raw.githubusercontent.com/heysanzu/WhereIsRide/main/icon.png" x="136.9" y="40" width="32" height="32" clip-path="url(#ic)" preserveAspectRatio="xMidYMid slice"/>
         </svg>
         <div class="eta">
           <div><strong>Arriving soon</strong><span>Live location</span></div>
@@ -582,6 +582,8 @@
 })();
 
 // Background music: loops, no mute button.
+// Browsers block autoplay with sound, so try immediately and
+// fall back to starting on the visitor's first interaction.
 (function () {
   var bgm = document.getElementById('bgm');
   if (!bgm) return;
